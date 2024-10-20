@@ -132,6 +132,6 @@ button:focus-visible {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-gradient-to-t from-custom-start to-custom-end text-foreground text-custom-text;
   }
 }
