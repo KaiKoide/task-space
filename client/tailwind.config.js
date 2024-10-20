@@ -11,8 +11,9 @@ export default {
       },
       colors: {
         "custom-text": "#635C6E",
-        "custom-start": "#F7D2FD", // スタートの色
-        "custom-end": "#FCF0E0", // 終わりの色
+        "custom-start": "#F7D2FD",
+        "custom-end": "#FCF0E0",
+        "custom-border": "#977496",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
