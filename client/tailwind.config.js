@@ -14,6 +14,7 @@ export default {
         "custom-start": "#F7D2FD",
         "custom-end": "#FCF0E0",
         "custom-border": "#977496",
+        "custom-card": "#E2EFE8",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
