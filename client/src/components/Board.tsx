@@ -9,6 +9,7 @@ import tasksData from "@/mock/tasksData.json";
 import groupData from "@/mock/groupsData.json";
 import type { ITask } from "@/types/data";
 import { Badge } from "./ui/badge";
+import { cn } from "@/lib/utils";
 
 function Board() {
 	const tasks: ITask[] = tasksData as ITask[];
@@ -26,11 +27,22 @@ function Board() {
 		return acc;
 	}, {});
 
+	const orderedStatus = ["todo", "in_progress", "done"];
+
 	return (
 		<div className="flex justify-evenly gap-4 p-4">
-			{Object.keys(groupedTasks).map((status) => (
+			{orderedStatus.map((status) => (
 				<div key={status}>
-					<Badge className="capitalize mb-3">{status.replace("_", " ")}</Badge>
+					<Badge
+						className={cn(
+							"capitalize mb-3 text-lg rounded-lg",
+							status === "todo" && "bg-violet-300",
+							status === "in_progress" && "bg-pink-400",
+							status === "done" && "bg-purple-400",
+						)}
+					>
+						{status.replace("_", " ")}
+					</Badge>
 
 					{groupedTasks[status].map((task) => (
 						<Card key={task.id} className="mb-5">
