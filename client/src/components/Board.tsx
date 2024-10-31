@@ -1,15 +1,11 @@
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
+import { DndContext } from "@dnd-kit/core";
+
+import { cn } from "@/lib/utils";
 import tasksData from "@/mock/tasksData.json";
 import groupData from "@/mock/groupsData.json";
 import type { ITask } from "@/types/data";
 import { Badge } from "./ui/badge";
-import { cn } from "@/lib/utils";
+import SortableCard from "./ui/sortableCard";
 
 function Board() {
 	const tasks: ITask[] = tasksData as ITask[];
@@ -30,35 +26,32 @@ function Board() {
 	const orderedStatus = ["todo", "in_progress", "done"];
 
 	return (
-		<div className="flex justify-evenly gap-4 p-4">
-			{orderedStatus.map((status) => (
-				<div key={status}>
-					<Badge
-						className={cn(
-							"capitalize mb-3 text-lg rounded-lg",
-							status === "todo" && "bg-violet-300",
-							status === "in_progress" && "bg-pink-400",
-							status === "done" && "bg-purple-400",
-						)}
-					>
-						{status.replace("_", " ")}
-					</Badge>
+		<DndContext>
+			<div className="flex justify-evenly gap-4 p-4">
+				{orderedStatus.map((status) => (
+					<div key={status}>
+						<Badge
+							className={cn(
+								"capitalize mb-3 text-lg rounded-lg",
+								status === "todo" && "bg-violet-300",
+								status === "in_progress" && "bg-pink-400",
+								status === "done" && "bg-purple-400",
+							)}
+						>
+							{status.replace("_", " ")}
+						</Badge>
 
-					{groupedTasks[status].map((task) => (
-						<Card key={task.id} className="mb-5">
-							<CardHeader>
-								<CardTitle className="text-custom-text">{task.title}</CardTitle>
-								<Badge>{groups[task.group_id]}</Badge>
-								<CardDescription>{task.due_date}</CardDescription>
-							</CardHeader>
-							<CardContent>
-								<p>{task.description}</p>
-							</CardContent>
-						</Card>
-					))}
-				</div>
-			))}
-		</div>
+						{groupedTasks[status].map((task) => (
+							<SortableCard
+								key={task.id}
+								task={task}
+								groupName={groups[task.group_id]}
+							/>
+						))}
+					</div>
+				))}
+			</div>
+		</DndContext>
 	);
 }
 
