@@ -1,10 +1,18 @@
-import { DndContext } from "@dnd-kit/core";
+import {
+	closestCorners,
+	DndContext,
+	KeyboardSensor,
+	PointerSensor,
+	useSensor,
+	useSensors,
+} from "@dnd-kit/core";
 
 import Column from "./ui/column";
 
 import tasksData from "@/mock/tasksData.json";
 import groupData from "@/mock/groupsData.json";
 import type { ITask } from "@/types/data";
+import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 
 function Board() {
 	const tasks: ITask[] = tasksData as ITask[];
@@ -26,8 +34,15 @@ function Board() {
 
 	const orderedStatus = ["todo", "in_progress", "done"];
 
+	const sensors = useSensors(
+		useSensor(PointerSensor),
+		useSensor(KeyboardSensor, {
+			coordinateGetter: sortableKeyboardCoordinates,
+		}),
+	);
+
 	return (
-		<DndContext>
+		<DndContext sensors={sensors} collisionDetection={closestCorners}>
 			<div className="flex justify-evenly gap-4 p-4">
 				{orderedStatus.map((status) => (
 					<Column

@@ -1,3 +1,6 @@
+import { CSS } from "@dnd-kit/utilities";
+import { useSortable } from "@dnd-kit/sortable";
+
 import {
 	Card,
 	CardContent,
@@ -14,8 +17,23 @@ interface SortableCardProps {
 }
 
 function SortableCard({ task, groupName }: SortableCardProps) {
+	const { attributes, listeners, setNodeRef, transform } = useSortable({
+		id: task.id,
+	});
+
+	const style = {
+		transform: CSS.Transform.toString(transform),
+	};
+
 	return (
-		<Card key={task.id} className="mb-5">
+		<Card
+			key={task.id}
+			className="mb-5"
+			ref={setNodeRef}
+			{...attributes}
+			{...listeners}
+			style={style}
+		>
 			<CardHeader>
 				<CardTitle className="text-custom-text">{task.title}</CardTitle>
 				<Badge>{groupName}</Badge>

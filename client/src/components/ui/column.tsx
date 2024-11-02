@@ -1,4 +1,5 @@
 import { useDroppable } from "@dnd-kit/core";
+import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 
 import SortableCard from "./sortableCard";
 
@@ -13,27 +14,35 @@ interface ColumnProps {
 }
 
 function Column({ status, groupedTasks, groups }: ColumnProps) {
-	return (
-		<div key={status}>
-			<Badge
-				className={cn(
-					"capitalize mb-3 text-lg rounded-lg",
-					status === "todo" && "bg-fuchsia-100",
-					status === "in_progress" && "bg-fuchsia-200",
-					status === "done" && "bg-fuchsia-300",
-				)}
-			>
-				{status.replace("_", " ")}
-			</Badge>
+	const { setNodeRef } = useDroppable({ id: status });
 
-			{groupedTasks[status].map((task) => (
-				<SortableCard
-					key={task.id}
-					task={task}
-					groupName={groups[task.group_id]}
-				/>
-			))}
-		</div>
+	return (
+		<SortableContext
+			id={status}
+			items={groupedTasks[status].map((task) => task.id)}
+			strategy={rectSortingStrategy}
+		>
+			<div ref={setNodeRef}>
+				<Badge
+					className={cn(
+						"capitalize mb-3 text-lg rounded-lg",
+						status === "todo" && "bg-fuchsia-100",
+						status === "in_progress" && "bg-fuchsia-200",
+						status === "done" && "bg-fuchsia-300",
+					)}
+				>
+					{status.replace("_", " ")}
+				</Badge>
+
+				{groupedTasks[status].map((task) => (
+					<SortableCard
+						key={task.id}
+						task={task}
+						groupName={groups[task.group_id]}
+					/>
+				))}
+			</div>
+		</SortableContext>
 	);
 }
 
