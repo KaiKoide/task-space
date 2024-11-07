@@ -5,6 +5,8 @@ import {
 	PointerSensor,
 	useSensor,
 	useSensors,
+	type DragEndEvent,
+	DragOverEvent,
 } from "@dnd-kit/core";
 
 import Column from "./ui/column";
@@ -30,7 +32,7 @@ function Board() {
 		return acc;
 	}, {});
 
-	console.log("groupedTasks", groupedTasks);
+	// console.log("groupedTasks", groupedTasks);
 
 	const orderedStatus = ["todo", "in_progress", "done"];
 
@@ -41,8 +43,26 @@ function Board() {
 		}),
 	);
 
+	function handleDragEnd(event: DragEndEvent) {
+		const { active, over } = event;
+
+		if (!over || active.id === over.id) {
+			console.log("🦈🦈🦈🦈");
+			return;
+		}
+		if (active.id !== over.id) {
+			console.log("💊💊💊💊💊💊💊");
+
+			console.log("event", event);
+		}
+	}
+
 	return (
-		<DndContext sensors={sensors} collisionDetection={closestCorners}>
+		<DndContext
+			sensors={sensors}
+			collisionDetection={closestCorners}
+			onDragEnd={handleDragEnd}
+		>
 			<div className="flex justify-evenly gap-4 p-4">
 				{orderedStatus.map((status) => (
 					<Column

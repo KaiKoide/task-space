@@ -17,12 +17,14 @@ interface SortableCardProps {
 }
 
 function SortableCard({ task, groupName }: SortableCardProps) {
-	const { attributes, listeners, setNodeRef, transform } = useSortable({
-		id: task.id,
-	});
+	const { attributes, listeners, setNodeRef, transform, transition } =
+		useSortable({
+			id: task.id,
+		});
 
 	const style = {
 		transform: CSS.Transform.toString(transform),
+		transition,
 	};
 
 	return (
