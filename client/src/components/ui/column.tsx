@@ -11,7 +11,6 @@ import SortableCard from "./sortableCard";
 import { Badge } from "./badge";
 import { cn } from "@/lib/utils";
 import type { ITask, IStatus } from "@/types/data";
-import { useMemo } from "react";
 
 interface ColumnProps {
 	statusData: IStatus;
@@ -25,17 +24,12 @@ function Column({ statusData, groupedTasks, groups }: ColumnProps) {
 	// 	[groupedTasks[status]],
 	// );
 
-	const columnId = status;
-
-	// console.log("columnId", columnId);
-	console.log("groupedTasks", groupedTasks);
-
 	// const { setNodeRef } = useDroppable({ id: status });
 
 	const { setNodeRef, attributes, listeners, transform, transition } =
 		useSortable({
-			id: columnId,
-			data: { type: "Column", status },
+			id: statusData.id,
+			data: { type: "Column", statusData },
 		});
 
 	const style = {

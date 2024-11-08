@@ -32,27 +32,17 @@ function Board() {
 		return acc;
 	}, {});
 
-	console.log("statusData", statusData);
-
-	// const columnId = useMemo(
-	// 	() =>
-	// 		Object.values(groupedTasks).flatMap((tasks) =>
-	// 			tasks.map((task) => task.id),
-	// 		),
-	// 	[groupedTasks],
-	// );
-
 	const groups = groupData.reduce((acc: Record<string, string>, group) => {
 		acc[group.id] = group.name;
 		return acc;
 	}, {});
 
-	console.log("groups", groups);
+	const columnsId = useMemo(
+		() => statusData.map((status) => status.id),
+		[statusData],
+	);
 
-	// console.log("groupedTasks", groupedTasks);
-
-	const orderedStatus = ["todo", "in_progress", "done"];
-	const columnId = orderedStatus;
+	console.log("columnsId", columnsId);
 
 	const sensors = useSensors(
 		useSensor(PointerSensor),
@@ -85,7 +75,7 @@ function Board() {
 			onDragStart={onDragStart}
 		>
 			<div className="flex justify-evenly gap-4 p-4">
-				<SortableContext items={columnId}>
+				<SortableContext items={columnsId}>
 					{statusData.map((status) => (
 						<Column
 							key={status.id}
