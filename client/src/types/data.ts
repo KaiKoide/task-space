@@ -11,6 +11,11 @@ export interface IGroupMembers {
 	joined_at: string;
 }
 
+export interface IStatus {
+	id: number;
+	status: string;
+}
+
 export interface ITags {
 	id: string;
 	name: string;
