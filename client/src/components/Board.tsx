@@ -8,20 +8,23 @@ import {
 	type DragEndEvent,
 	DragOverEvent,
 	type DragStartEvent,
+	DragOverlay,
 } from "@dnd-kit/core";
-import { SortableContext } from "@dnd-kit/sortable";
+import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 
 import Column from "./ui/column";
 
 import tasksData from "@/mock/tasksData.json";
 import groupData from "@/mock/groupsData.json";
 import statusData from "@/mock/statusData.json";
-import type { ITask } from "@/types/data";
+import type { ITask, IStatus } from "@/types/data";
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 
 function Board() {
-	const [activeColumn, setActiveColumn] = useState(null);
+	const [columns, setColumns] = useState<IStatus[]>(statusData);
+	const [activeColumn, setActiveColumn] = useState<IStatus | null>(null);
 
 	const tasks: ITask[] = tasksData as ITask[];
 	const groupedTasks = tasks.reduce((acc: Record<string, ITask[]>, task) => {
@@ -38,54 +41,99 @@ function Board() {
 	}, {});
 
 	const columnsId = useMemo(
-		() => statusData.map((status) => status.id),
-		[statusData],
+		() => columns.map((status) => status.id),
+		[columns],
 	);
 
-	console.log("columnsId", columnsId);
-
 	const sensors = useSensors(
-		useSensor(PointerSensor),
-		useSensor(KeyboardSensor, {
-			coordinateGetter: sortableKeyboardCoordinates,
+		useSensor(PointerSensor, {
+			activationConstraint: {
+				distance: 3,
+			},
 		}),
 	);
 
 	function handleDragEnd(event: DragEndEvent) {
 		const { active, over } = event;
 
-		if (!over || active.id === over.id) {
+		if (!over) {
 			console.log("🦈🦈🦈🦈");
 			return;
 		}
+
+		const activeColumnId = active.id;
+		const overColumnId = over.id;
+
+		if (activeColumnId === overColumnId) {
+			console.log("🐬🐬🐬🐬🐬🐬🐬");
+			return;
+		}
+
+		console.log("🍣🍣🍣activeColumnId🍣🍣🍣", activeColumnId);
+
 		console.log("Column moved", active.id, "to", over.id);
+
+		setColumns((columns) => {
+			const activeColumnIndex = columns.findIndex(
+				(column) => column.id === activeColumnId,
+			);
+
+			const overColumnIndex = columns.findIndex(
+				(column) => column.id === overColumnId,
+			);
+
+			console.log(
+				"activeColumnIndex",
+				activeColumnIndex,
+				"overColumnIndex",
+				overColumnIndex,
+			);
+
+			return arrayMove(columns, activeColumnIndex, overColumnIndex);
+		});
 	}
 
 	function onDragStart(event: DragStartEvent) {
 		console.log("DragStartEvent", event);
-		// if (event.active.data.current?.type === "Column") {
-		// }
+		if (event.active.data.current?.type === "Column") {
+			setActiveColumn(event.active.data.current.statusData);
+			return;
+		}
 	}
 
 	return (
 		<DndContext
 			sensors={sensors}
 			collisionDetection={closestCorners}
-			// onDragEnd={handleDragEnd}
+			onDragEnd={handleDragEnd}
 			onDragStart={onDragStart}
 		>
 			<div className="flex justify-evenly gap-4 p-4">
 				<SortableContext items={columnsId}>
-					{statusData.map((status) => (
+					{columns.map((status) => (
 						<Column
 							key={status.id}
 							statusData={status}
 							groupedTasks={groupedTasks}
 							groups={groups}
+							isDragging={false}
 						/>
 					))}
 				</SortableContext>
 			</div>
+			{createPortal(
+				<DragOverlay>
+					{activeColumn && (
+						<Column
+							statusData={activeColumn}
+							groupedTasks={groupedTasks}
+							groups={groups}
+							isDragging={true}
+						/>
+					)}
+				</DragOverlay>,
+				document.body,
+			)}
 		</DndContext>
 	);
 }
