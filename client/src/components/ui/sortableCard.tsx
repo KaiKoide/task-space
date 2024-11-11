@@ -17,15 +17,30 @@ interface SortableCardProps {
 }
 
 function SortableCard({ task, groupName }: SortableCardProps) {
-	const { attributes, listeners, setNodeRef, transform, transition } =
-		useSortable({
-			id: task.id,
-		});
+	const {
+		attributes,
+		listeners,
+		setNodeRef,
+		transform,
+		transition,
+		isDragging,
+	} = useSortable({
+		id: task.id,
+		data: {
+			type: "Task",
+			task,
+		},
+	});
 
 	const style = {
 		transform: CSS.Transform.toString(transform),
 		transition,
+		opacity: isDragging ? 0.5 : 1,
 	};
+
+	// if (isDragging) {
+	// 	return <div>Dragging</div>;
+	// }
 
 	return (
 		<Card

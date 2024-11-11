@@ -1,12 +1,11 @@
 import {
 	closestCorners,
 	DndContext,
-	KeyboardSensor,
 	PointerSensor,
 	useSensor,
 	useSensors,
 	type DragEndEvent,
-	DragOverEvent,
+	type DragOverEvent,
 	type DragStartEvent,
 	DragOverlay,
 } from "@dnd-kit/core";
@@ -21,12 +20,15 @@ import type { ITask, IStatus } from "@/types/data";
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import SortableCard from "./ui/sortableCard";
 
 function Board() {
 	const [columns, setColumns] = useState<IStatus[]>(statusData);
+	const [tasks, setTasks] = useState<ITask[]>(tasksData);
 	const [activeColumn, setActiveColumn] = useState<IStatus | null>(null);
+	const [activeTask, setActiveTask] = useState<ITask | null>(null);
 
-	const tasks: ITask[] = tasksData as ITask[];
+	// const tasks: ITask[] = tasksData as ITask[];
 	const groupedTasks = tasks.reduce((acc: Record<string, ITask[]>, task) => {
 		if (!acc[task.status]) {
 			acc[task.status] = [];
@@ -54,24 +56,18 @@ function Board() {
 	);
 
 	function handleDragEnd(event: DragEndEvent) {
-		const { active, over } = event;
+		setActiveColumn(null);
+		setActiveTask(null);
 
-		if (!over) {
-			console.log("🦈🦈🦈🦈");
-			return;
-		}
+		const { active, over } = event;
+		if (!over) return;
+
+		console.log("🍢🍢🍢🍢🍢event🍢🍢🍢🍢🍢", event);
 
 		const activeColumnId = active.id;
 		const overColumnId = over.id;
 
-		if (activeColumnId === overColumnId) {
-			console.log("🐬🐬🐬🐬🐬🐬🐬");
-			return;
-		}
-
-		console.log("🍣🍣🍣activeColumnId🍣🍣🍣", activeColumnId);
-
-		console.log("Column moved", active.id, "to", over.id);
+		if (activeColumnId === overColumnId) return;
 
 		setColumns((columns) => {
 			const activeColumnIndex = columns.findIndex(
@@ -82,31 +78,82 @@ function Board() {
 				(column) => column.id === overColumnId,
 			);
 
-			console.log(
-				"activeColumnIndex",
-				activeColumnIndex,
-				"overColumnIndex",
-				overColumnIndex,
-			);
-
 			return arrayMove(columns, activeColumnIndex, overColumnIndex);
 		});
 	}
 
-	function onDragStart(event: DragStartEvent) {
-		console.log("DragStartEvent", event);
+	function handleDragStart(event: DragStartEvent) {
 		if (event.active.data.current?.type === "Column") {
 			setActiveColumn(event.active.data.current.statusData);
 			return;
 		}
+
+		if (event.active.data.current?.type === "Task") {
+			setActiveTask(event.active.data.current.task);
+			return;
+		}
 	}
+
+	function handleDragOver(event: DragOverEvent) {
+		const { active, over } = event;
+		if (!over) return;
+
+		console.log("🍣🍣🍣🍣event🍣🍣🍣🍣", event);
+
+		const activeId = active.id;
+		const overId = over.id;
+
+		console.log("overId", overId);
+
+		if (activeId === overId) return;
+
+		const isActiveTask = active.data.current?.type === "Task";
+		const isOverTask = over.data.current?.type === "Task";
+
+		if (!isActiveTask) return;
+
+		if (isActiveTask && isOverTask) {
+			// Drop a task over another task
+			setTasks((tasks) => {
+				const activeIndex = tasks.findIndex((task) => task.id === activeId);
+				const overIndex = tasks.findIndex((task) => task.id === overId);
+
+				if (tasks[activeIndex].column_id !== tasks[overIndex].column_id) {
+					console.log("🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄");
+
+					tasks[activeIndex].column_id = tasks[overIndex].column_id;
+				}
+
+				return arrayMove(tasks, activeIndex, overIndex);
+			});
+		}
+
+		// Drop a task over a column
+		const isOverColumn = over.data.current?.type === "Column";
+		const overStatusId = over.data.current?.statusData?.id;
+		console.log("overStatusId", overStatusId);
+
+		if (isActiveTask && isOverColumn) {
+			setTasks((tasks) => {
+				const activeIndex = tasks.findIndex((task) => task.id === activeId);
+				const overIndex = tasks.findIndex((task) => task.id === overId);
+
+				// tasks[activeIndex].status_id = tasks[overIndex].status_id;
+
+				return arrayMove(tasks, activeIndex, overIndex);
+			});
+		}
+	}
+
+	console.log("🪼🪼🪼🪼🪼tasks🪼🪼🪼🪼🪼🪼", tasks);
 
 	return (
 		<DndContext
 			sensors={sensors}
 			collisionDetection={closestCorners}
 			onDragEnd={handleDragEnd}
-			onDragStart={onDragStart}
+			onDragStart={handleDragStart}
+			onDragOver={handleDragOver}
 		>
 			<div className="flex justify-evenly gap-4 p-4">
 				<SortableContext items={columnsId}>
@@ -129,6 +176,12 @@ function Board() {
 							groupedTasks={groupedTasks}
 							groups={groups}
 							isDragging={true}
+						/>
+					)}
+					{activeTask && (
+						<SortableCard
+							task={activeTask}
+							groupName={groups[activeTask.group_id]}
 						/>
 					)}
 				</DragOverlay>,
