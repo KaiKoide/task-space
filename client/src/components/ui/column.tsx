@@ -47,10 +47,10 @@ function Column({ statusData, groupedTasks, groups, isDragging }: ColumnProps) {
 		>
 			<Badge
 				className={cn(
-					"capitalize mb-3 text-lg rounded-lg",
-					statusData.status === "todo" && "bg-fuchsia-100",
-					statusData.status === "in_progress" && "bg-fuchsia-200",
-					statusData.status === "done" && "bg-fuchsia-300",
+					"capitalize mb-3 text-lg rounded-lg border border-custom-default",
+					statusData.status === "todo" && "bg-custom-badge-label-100",
+					statusData.status === "in_progress" && "bg-custom-badge-label-200",
+					statusData.status === "done" && "bg-custom-badge-label-300",
 				)}
 				{...attributes}
 				{...listeners}
@@ -58,7 +58,7 @@ function Column({ statusData, groupedTasks, groups, isDragging }: ColumnProps) {
 				{statusData.status.replace("_", " ")}
 			</Badge>
 			<Trash2
-				className="absolute top-1.5 right-2 cursor-pointer"
+				className="absolute m-3 top-1 right-2 cursor-pointer"
 				onClick={handleDelete}
 			/>
 

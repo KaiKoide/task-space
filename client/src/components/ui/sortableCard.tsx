@@ -52,7 +52,7 @@ function SortableCard({ task, groupName }: SortableCardProps) {
 			style={style}
 		>
 			<CardHeader>
-				<CardTitle className="text-custom-text">{task.title}</CardTitle>
+				<CardTitle className="text-custom-default">{task.title}</CardTitle>
 				<Badge>{groupName}</Badge>
 				<CardDescription>{task.due_date}</CardDescription>
 			</CardHeader>

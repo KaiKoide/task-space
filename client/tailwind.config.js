@@ -10,12 +10,16 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
-        "custom-text": "#635C6E",
-        "custom-start": "#F7D2FD",
-        "custom-end": "#FCF0E0",
-        "custom-border": "#977496",
+        "custom-default": "#9F1C92",
+        "custom-start": "#FEDDFF",
+        "custom-end": "#FFF8D3",
         "custom-card": "#E2EFE8",
-        "custom-badge": "#E6D8FF",
+        "custom-badge": "#FFEB89",
+        "custom-badge-label": {
+          100: "#FED9FF",
+          200: "#FFC3EE",
+          300: "#FF9CCD",
+        },
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
