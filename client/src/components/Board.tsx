@@ -94,8 +94,6 @@ function Board() {
 		const { active, over } = event;
 		if (!over) return;
 
-		console.log("🍣🍣🍣🍣event🍣🍣🍣🍣", event);
-
 		const activeId = active.id;
 		const overId = over.id;
 
@@ -112,7 +110,7 @@ function Board() {
 				const activeIndex = tasks.findIndex((task) => task.id === activeId);
 				const overIndex = tasks.findIndex((task) => task.id === overId);
 
-				// tasks[activeIndex].column_id = tasks[overIndex].column_id;
+				tasks[activeIndex].column_id = tasks[overIndex].column_id;
 				tasks[activeIndex].status = tasks[overIndex].status;
 
 				return arrayMove(tasks, activeIndex, overIndex);
@@ -121,24 +119,13 @@ function Board() {
 
 		// Drop a task over a column
 		const isOverColumn = over.data.current?.type === "Column";
-		// const overStatusId = over.data.current?.statusData?.id;
-		// console.log("overStatusId", overStatusId);
-
-		console.log("over.data.current?.type", over.data.current?.type);
-
-		console.log("isActiveTask:", isActiveTask, "isOverColumn:", isOverColumn);
 
 		if (isActiveTask && isOverColumn) {
-			console.log("🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄");
-
 			setTasks((tasks) => {
 				const activeIndex = tasks.findIndex((task) => task.id === activeId);
-				const overIndex = tasks.findIndex((task) => task.id === overId);
 
-				console.log("tasks[overIndex]", tasks[overIndex]);
-
-				// tasks[activeIndex].status_id = tasks[overIndex].status_id;
-				// tasks[activeIndex].status = tasks[overIndex].status;
+				tasks[activeIndex].column_id = over.data.current?.statusData.id;
+				tasks[activeIndex].status = over.data.current?.statusData.status;
 
 				return arrayMove(tasks, activeIndex, activeIndex);
 			});
