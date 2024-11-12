@@ -18,7 +18,7 @@ interface ColumnProps {
 
 function Column({ statusData, groupedTasks, groups, isDragging }: ColumnProps) {
 	const taskIds = useMemo(
-		() => groupedTasks[statusData.status].map((task) => task.id),
+		() => (groupedTasks[statusData.status] || []).map((task) => task.id),
 		[groupedTasks],
 	);
 
@@ -42,7 +42,7 @@ function Column({ statusData, groupedTasks, groups, isDragging }: ColumnProps) {
 		<div
 			ref={setNodeRef}
 			style={style}
-			className="bg-blue-100 relative p-3 rounded-md"
+			className="bg-blue-100 relative p-3 rounded-md w-80"
 		>
 			<Badge
 				className={cn(
@@ -62,7 +62,7 @@ function Column({ statusData, groupedTasks, groups, isDragging }: ColumnProps) {
 			/>
 
 			<SortableContext items={taskIds}>
-				{groupedTasks[statusData.status].map((task) => (
+				{(groupedTasks[statusData.status] || []).map((task) => (
 					<SortableCard
 						key={task.id}
 						task={task}
