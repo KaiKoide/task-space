@@ -38,10 +38,6 @@ function SortableCard({ task, groupName }: SortableCardProps) {
 		opacity: isDragging ? 0.5 : 1,
 	};
 
-	// if (isDragging) {
-	// 	return <div>Dragging</div>;
-	// }
-
 	return (
 		<Card
 			key={task.id}

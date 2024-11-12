@@ -1,14 +1,13 @@
-import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Trash2 } from "lucide-react";
-
-import SortableCard from "./sortableCard";
+import { useMemo } from "react";
 
 import { Badge } from "./badge";
+import SortableCard from "./sortableCard";
+
 import { cn } from "@/lib/utils";
 import type { ITask, IStatus } from "@/types/data";
-import { useMemo } from "react";
 
 interface ColumnProps {
 	statusData: IStatus;

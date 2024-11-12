@@ -10,25 +10,23 @@ import {
 	DragOverlay,
 } from "@dnd-kit/core";
 import { SortableContext, arrayMove } from "@dnd-kit/sortable";
+import { useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 
 import Column from "./ui/column";
+import SortableCard from "./ui/sortableCard";
 
 import tasksData from "@/mock/tasksData.json";
 import groupData from "@/mock/groupsData.json";
 import statusData from "@/mock/statusData.json";
 import type { ITask, IStatus } from "@/types/data";
-import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
-import { useMemo, useState } from "react";
-import { createPortal } from "react-dom";
-import SortableCard from "./ui/sortableCard";
 
 function Board() {
 	const [columns, setColumns] = useState<IStatus[]>(statusData);
-	const [tasks, setTasks] = useState<ITask[]>(tasksData);
+	const [tasks, setTasks] = useState<ITask[]>(tasksData as ITask[]);
 	const [activeColumn, setActiveColumn] = useState<IStatus | null>(null);
 	const [activeTask, setActiveTask] = useState<ITask | null>(null);
 
-	// const tasks: ITask[] = tasksData as ITask[];
 	const groupedTasks = tasks.reduce((acc: Record<string, ITask[]>, task) => {
 		if (!acc[task.status]) {
 			acc[task.status] = [];
@@ -61,8 +59,6 @@ function Board() {
 
 		const { active, over } = event;
 		if (!over) return;
-
-		console.log("🍢🍢🍢🍢🍢event🍢🍢🍢🍢🍢", event);
 
 		const activeColumnId = active.id;
 		const overColumnId = over.id;
@@ -103,8 +99,6 @@ function Board() {
 		const activeId = active.id;
 		const overId = over.id;
 
-		console.log("overId", overId);
-
 		if (activeId === overId) return;
 
 		const isActiveTask = active.data.current?.type === "Task";
@@ -118,11 +112,8 @@ function Board() {
 				const activeIndex = tasks.findIndex((task) => task.id === activeId);
 				const overIndex = tasks.findIndex((task) => task.id === overId);
 
-				if (tasks[activeIndex].column_id !== tasks[overIndex].column_id) {
-					console.log("🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄");
-
-					tasks[activeIndex].column_id = tasks[overIndex].column_id;
-				}
+				// tasks[activeIndex].column_id = tasks[overIndex].column_id;
+				tasks[activeIndex].status = tasks[overIndex].status;
 
 				return arrayMove(tasks, activeIndex, overIndex);
 			});
@@ -130,22 +121,29 @@ function Board() {
 
 		// Drop a task over a column
 		const isOverColumn = over.data.current?.type === "Column";
-		const overStatusId = over.data.current?.statusData?.id;
-		console.log("overStatusId", overStatusId);
+		// const overStatusId = over.data.current?.statusData?.id;
+		// console.log("overStatusId", overStatusId);
+
+		console.log("over.data.current?.type", over.data.current?.type);
+
+		console.log("isActiveTask:", isActiveTask, "isOverColumn:", isOverColumn);
 
 		if (isActiveTask && isOverColumn) {
+			console.log("🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄");
+
 			setTasks((tasks) => {
 				const activeIndex = tasks.findIndex((task) => task.id === activeId);
 				const overIndex = tasks.findIndex((task) => task.id === overId);
 
-				// tasks[activeIndex].status_id = tasks[overIndex].status_id;
+				console.log("tasks[overIndex]", tasks[overIndex]);
 
-				return arrayMove(tasks, activeIndex, overIndex);
+				// tasks[activeIndex].status_id = tasks[overIndex].status_id;
+				// tasks[activeIndex].status = tasks[overIndex].status;
+
+				return arrayMove(tasks, activeIndex, activeIndex);
 			});
 		}
 	}
-
-	console.log("🪼🪼🪼🪼🪼tasks🪼🪼🪼🪼🪼🪼", tasks);
 
 	return (
 		<DndContext
