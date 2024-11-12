@@ -6,7 +6,6 @@
 		"created_at": "2023-10-03T12:00:00Z",
 		"due_date": "2023-10-10",
 		"status": "in_progress",
-		"column_id": 2,
 		"group_id": "g1h2i3j4-1234-56ab-cdef-0987654321ef",
 		"created_by": "a1b2c3d4-5678-90ab-cdef-1234567890ab"
 	},
@@ -17,7 +16,6 @@
 		"created_at": "2023-10-04T14:00:00Z",
 		"due_date": "2023-10-15",
 		"status": "todo",
-		"column_id": 1,
 		"group_id": "k1l2m3n4-5678-90ab-cdef-1234567890gh",
 		"created_by": "b1c2d3e4-1234-56ab-cdef-0987654321ab"
 	},
@@ -28,7 +26,6 @@
 		"created_at": "2023-10-04T14:00:00Z",
 		"due_date": "2023-10-15",
 		"status": "todo",
-		"column_id": 1,
 		"group_id": "k1l2m3n4-5678-90ab-cdef-1234567890gh",
 		"created_by": "b1c2d3e4-1234-56ab-cdef-0987654321ab"
 	},
@@ -39,7 +36,6 @@
 		"created_at": "2023-10-04T14:00:00Z",
 		"due_date": "2023-10-15",
 		"status": "done",
-		"column_id": 3,
 		"group_id": "k1l2m3n4-5678-90ab-cdef-1234567890gh",
 		"created_by": "b1c2d3e4-1234-56ab-cdef-0987654321ab"
 	},
@@ -50,7 +46,6 @@
 		"created_at": "2023-10-04T14:00:00Z",
 		"due_date": "2023-10-15",
 		"status": "in_progress",
-		"column_id": 2,
 		"group_id": "k1l2m3n4-5678-90ab-cdef-1234567890gh",
 		"created_by": "b1c2d3e4-1234-56ab-cdef-0987654321ab"
 	},
@@ -61,7 +56,6 @@
 		"created_at": "2023-10-04T14:00:00Z",
 		"due_date": "2023-10-15",
 		"status": "done",
-		"column_id": 3,
 		"group_id": "k1l2m3n4-5678-90ab-cdef-1234567890gh",
 		"created_by": "b1c2d3e4-1234-56ab-cdef-0987654321ab"
 	}

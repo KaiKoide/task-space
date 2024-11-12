@@ -110,7 +110,6 @@ function Board() {
 				const activeIndex = tasks.findIndex((task) => task.id === activeId);
 				const overIndex = tasks.findIndex((task) => task.id === overId);
 
-				tasks[activeIndex].column_id = tasks[overIndex].column_id;
 				tasks[activeIndex].status = tasks[overIndex].status;
 
 				return arrayMove(tasks, activeIndex, overIndex);
@@ -124,7 +123,6 @@ function Board() {
 			setTasks((tasks) => {
 				const activeIndex = tasks.findIndex((task) => task.id === activeId);
 
-				tasks[activeIndex].column_id = over.data.current?.statusData.id;
 				tasks[activeIndex].status = over.data.current?.statusData.status;
 
 				return arrayMove(tasks, activeIndex, activeIndex);

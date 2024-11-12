@@ -29,7 +29,6 @@ export interface ITask {
 	created_at: string;
 	due_date: string;
 	status: "todo" | "in_progress" | "done";
-	column_id: number;
 	group_id: string;
 	created_by: string;
 }
