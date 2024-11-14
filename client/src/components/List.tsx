@@ -82,7 +82,7 @@ function List() {
 								<TableCell className="font-medium text-left">
 									{task.title}
 								</TableCell>
-								<TableCell className="capitalize">
+								<TableCell className="capitalize border-x border-custom-default/30">
 									<Popover
 										open={openState[task.id] || false}
 										onOpenChange={(isOpen) => handleOpenChange(task.id, isOpen)}
@@ -92,7 +92,7 @@ function List() {
 												variant="outline"
 												// biome-ignore lint/a11y/useSemanticElements: <explanation>
 												role="combobox"
-												className="w-[200px] justify-between capitalize"
+												className="w-30 justify-between capitalize"
 											>
 												{value[task.id]
 													? value[task.id].replace("_", " ")
@@ -131,7 +131,9 @@ function List() {
 										</PopoverContent>
 									</Popover>
 								</TableCell>
-								<TableCell>{task.due_date}</TableCell>
+								<TableCell className="border-r border-custom-default/30">
+									{task.due_date}
+								</TableCell>
 								<TableCell className="text-right max-w-52">
 									{task.description}
 								</TableCell>
