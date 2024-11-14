@@ -2,14 +2,32 @@ import { Ellipsis, Trash2, NotebookPen } from "lucide-react";
 import type { ReactNode } from "react";
 
 import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "@/components/ui/dialog";
+import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import { Button } from "./button";
 
 function PopoverComponent({ children }: { children: ReactNode }) {
 	function handleClickOption(option: string) {
-		console.log(option);
+		switch (option) {
+			case "delete":
+				console.log("delete!!!");
+				break;
+			case "edit":
+				console.log("edit!!!");
+				break;
+		}
 	}
 
 	return (
@@ -27,14 +45,37 @@ function PopoverComponent({ children }: { children: ReactNode }) {
 						<NotebookPen size={20} />
 						<p>Edit</p>
 					</div>
-					{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
-					<div
-						className="flex gap-2 hover:opacity-30 cursor-pointer items-center"
-						onClick={() => handleClickOption("delete")}
-					>
-						<Trash2 size={20} />
-						<p>Delete</p>
-					</div>
+					<Dialog>
+						<DialogTrigger asChild>
+							<div className="flex gap-2 hover:opacity-30 cursor-pointer items-center">
+								<Trash2 size={20} />
+								<p>Delete</p>
+							</div>
+						</DialogTrigger>
+						<DialogContent className="sm:max-w-[425px]">
+							<DialogHeader>
+								<DialogTitle>Confirm Delete</DialogTitle>
+								<DialogDescription>
+									Do you really want to delete?
+								</DialogDescription>
+							</DialogHeader>
+
+							<DialogFooter>
+								<DialogClose asChild>
+									<Button variant="outline">No</Button>
+								</DialogClose>
+								<DialogClose asChild>
+									<Button
+										type="submit"
+										variant="destructive"
+										onClick={() => handleClickOption("delete")}
+									>
+										Delete
+									</Button>
+								</DialogClose>
+							</DialogFooter>
+						</DialogContent>
+					</Dialog>
 				</PopoverContent>
 				{children}
 			</div>

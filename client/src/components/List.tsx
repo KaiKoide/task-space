@@ -54,10 +54,6 @@ function List() {
 		setOpenState((prev) => ({ ...prev, [taskId]: false }));
 	}
 
-	function handleClickOption() {
-		console.log("click");
-	}
-
 	return (
 		<Table>
 			<TableHeader>
