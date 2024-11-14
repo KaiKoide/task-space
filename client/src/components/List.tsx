@@ -6,14 +6,33 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import {
+	Command,
+	CommandEmpty,
+	CommandGroup,
+	CommandInput,
+	CommandItem,
+	CommandList,
+} from "@/components/ui/command";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
 
 import tasksData from "@/mock/tasksData.json";
 import groupData from "@/mock/groupsData.json";
+import statusData from "@/mock/statusData.json";
 import type { ITask } from "@/types/data";
 import { useState } from "react";
+import { Check } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 function List() {
 	const [tasks, setTasks] = useState<ITask[]>(tasksData as ITask[]);
+	const [openState, setOpenState] = useState<{ [key: string]: boolean }>({});
+	const [value, setValue] = useState<{ [key: string]: string }>({});
 
 	const groupedTasks = tasks.reduce((acc: Record<string, ITask[]>, task) => {
 		if (!acc[task.group_id]) {
@@ -23,13 +42,14 @@ function List() {
 		return acc;
 	}, {});
 
-	console.log("groupedTasks", groupedTasks);
+	function handleOpenChange(taskId: string, isOpen: boolean) {
+		setOpenState((prev) => ({ ...prev, [taskId]: isOpen }));
+	}
 
-	const test = groupData.map((group) => {
-		return groupedTasks[group.id];
-	});
-
-	console.log(test);
+	function handleStatusSelect(taskId: string, newValue: string) {
+		setValue((prev) => ({ ...prev, [taskId]: newValue }));
+		setOpenState((prev) => ({ ...prev, [taskId]: false }));
+	}
 
 	return (
 		<Table>
@@ -63,7 +83,53 @@ function List() {
 									{task.title}
 								</TableCell>
 								<TableCell className="capitalize">
-									{task.status.replace("_", " ")}
+									<Popover
+										open={openState[task.id] || false}
+										onOpenChange={(isOpen) => handleOpenChange(task.id, isOpen)}
+									>
+										<PopoverTrigger asChild>
+											<Button
+												variant="outline"
+												// biome-ignore lint/a11y/useSemanticElements: <explanation>
+												role="combobox"
+												className="w-[200px] justify-between capitalize"
+											>
+												{value[task.id]
+													? value[task.id].replace("_", " ")
+													: task.status.replace("_", " ")}
+											</Button>
+										</PopoverTrigger>
+										<PopoverContent className="w-[200px] p-0">
+											<Command>
+												<CommandInput placeholder="Search status..." />
+												<CommandList>
+													<CommandEmpty>Add new status</CommandEmpty>
+													<CommandGroup>
+														{statusData.map((status) => (
+															<CommandItem
+																className="capitalize"
+																key={status.id}
+																value={status.status}
+																onSelect={() =>
+																	handleStatusSelect(task.id, status.status)
+																}
+															>
+																{status.status.replace("_", " ")}
+																<Check
+																	className={cn(
+																		"ml-auto",
+																		value[task.id] === status.status
+																			? "opacity-100"
+																			: "opacity-0",
+																	)}
+																/>
+															</CommandItem>
+														))}
+													</CommandGroup>
+												</CommandList>
+											</Command>
+										</PopoverContent>
+									</Popover>
 								</TableCell>
 								<TableCell>{task.due_date}</TableCell>
 								<TableCell className="text-right max-w-52">
