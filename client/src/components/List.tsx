@@ -1,3 +1,5 @@
+import { Ellipsis } from "lucide-react";
+
 import {
 	Table,
 	TableBody,
@@ -20,6 +22,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import PopoverComponent from "./ui/popoverComponent";
 
 import tasksData from "@/mock/tasksData.json";
 import groupData from "@/mock/groupsData.json";
@@ -51,6 +54,10 @@ function List() {
 		setOpenState((prev) => ({ ...prev, [taskId]: false }));
 	}
 
+	function handleClickOption() {
+		console.log("click");
+	}
+
 	return (
 		<Table>
 			<TableHeader>
@@ -74,13 +81,13 @@ function List() {
 					<>
 						<TableRow key={group.id} className="bg-gray-100">
 							<TableCell colSpan={4} className="font-semibold text-left">
-								{group.name}
+								<PopoverComponent>{group.name}</PopoverComponent>
 							</TableCell>
 						</TableRow>
 						{groupedTasks[group.id]?.map((task) => (
 							<TableRow key={task.id}>
 								<TableCell className="font-medium text-left">
-									{task.title}
+									<PopoverComponent>{task.title}</PopoverComponent>
 								</TableCell>
 								<TableCell className="capitalize border-x border-custom-default/30">
 									<Popover
