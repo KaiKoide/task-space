@@ -1,5 +1,3 @@
-import { Ellipsis } from "lucide-react";
-
 import {
 	Table,
 	TableBody,
