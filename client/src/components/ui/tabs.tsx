@@ -1,6 +1,7 @@
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 
+import List from "../List";
 import Board from "@/components/Board";
 
 function TabsComponent() {
@@ -27,13 +28,13 @@ function TabsComponent() {
 				</Tab>
 			</TabList>
 
-			<TabPanel className="p-4">
+			<TabPanel>
 				<Board />
 			</TabPanel>
-			<TabPanel className="p-4">
-				<h2 className="text-lg font-semibold">Content for Tab 2</h2>
+			<TabPanel>
+				<List />
 			</TabPanel>
-			<TabPanel className="p-4">
+			<TabPanel>
 				<h2 className="text-lg font-semibold">Content for Tab 3</h2>
 			</TabPanel>
 		</Tabs>

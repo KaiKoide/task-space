@@ -1,6 +1,6 @@
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Trash2 } from "lucide-react";
+import { Ellipsis } from "lucide-react";
 import { useMemo } from "react";
 
 import { Badge } from "./badge";
@@ -56,7 +56,7 @@ function Column({ statusData, groupedTasks, groups, isDragging }: ColumnProps) {
 			>
 				{statusData.status.replace("_", " ")}
 			</Badge>
-			<Trash2
+			<Ellipsis
 				className="absolute m-3 top-1 right-2 cursor-pointer"
 				onClick={handleDelete}
 			/>
