@@ -2,6 +2,7 @@ import {
 	Table,
 	TableBody,
 	TableCell,
+	TableFooter,
 	TableHead,
 	TableHeader,
 	TableRow,
@@ -27,7 +28,7 @@ import groupData from "@/mock/groupsData.json";
 import statusData from "@/mock/statusData.json";
 import type { ITask } from "@/types/data";
 import { useState } from "react";
-import { Check } from "lucide-react";
+import { Check, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 function List() {
@@ -143,6 +144,19 @@ function List() {
 					</>
 				))}
 			</TableBody>
+			<TableFooter>
+				<TableRow>
+					<TableCell
+						colSpan={4}
+						className="cursor-pointer hover:bg-slate-200/30"
+					>
+						<div className="flex items-center gap-2">
+							<Plus />
+							New group
+						</div>
+					</TableCell>
+				</TableRow>
+			</TableFooter>
 		</Table>
 	);
 }
