@@ -24,7 +24,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import PopoverComponent from "./ui/popoverComponent";
+import PopoverMenu from "./ui/popoverMenu";
 
 import { cn } from "@/lib/utils";
 import groupData from "@/mock/groupsData.json";
@@ -77,13 +77,13 @@ function List() {
 					<>
 						<TableRow key={group.id} className="bg-gray-100">
 							<TableCell colSpan={4} className="font-semibold text-left">
-								<PopoverComponent>{group.name}</PopoverComponent>
+								{group.name}
 							</TableCell>
 						</TableRow>
 						{groupedTasks[group.id]?.map((task) => (
 							<TableRow key={task.id}>
 								<TableCell className="font-medium text-left">
-									<PopoverComponent>{task.title}</PopoverComponent>
+									<PopoverMenu task={task}>{task.title}</PopoverMenu>
 								</TableCell>
 								<TableCell className="capitalize border-x border-custom-default/30">
 									<Popover

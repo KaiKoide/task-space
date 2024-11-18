@@ -9,8 +9,9 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "./badge";
-import type { ITask } from "@/types/data";
+import PopoverMenu from "./popoverMenu";
 
+import type { ITask } from "@/types/data";
 interface SortableCardProps {
 	task: ITask;
 	groupName: string;
@@ -48,7 +49,9 @@ function SortableCard({ task, groupName }: SortableCardProps) {
 			style={style}
 		>
 			<CardHeader>
-				<CardTitle className="text-custom-default">{task.title}</CardTitle>
+				<CardTitle className="text-custom-default">
+					<PopoverMenu task={task}>{task.title}</PopoverMenu>
+				</CardTitle>
 				<Badge>{groupName}</Badge>
 				<CardDescription>{task.due_date}</CardDescription>
 			</CardHeader>

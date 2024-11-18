@@ -18,11 +18,21 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "./button";
 
-function PopoverComponent({ children }: { children: ReactNode }) {
+import { useTaskStore } from "@/store/useStore";
+import type { ITask } from "@/types/data";
+
+interface PopoverMenuProps {
+	task: ITask;
+	children: ReactNode;
+}
+
+function PopoverMenu({ task, children }: PopoverMenuProps) {
+	const { deleteTask } = useTaskStore();
+
 	function handleClickOption(option: string) {
 		switch (option) {
 			case "delete":
-				console.log("delete!!!");
+				deleteTask(task.id);
 				break;
 			case "edit":
 				console.log("edit!!!");
@@ -83,4 +93,4 @@ function PopoverComponent({ children }: { children: ReactNode }) {
 	);
 }
 
-export default PopoverComponent;
+export default PopoverMenu;
