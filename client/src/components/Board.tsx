@@ -108,11 +108,16 @@ function Board() {
 			// Drop a task over another task
 			setTasks((tasks) => {
 				const activeIndex = tasks.findIndex((task) => task.id === activeId);
+				if (activeIndex === -1) return tasks;
 				const overIndex = tasks.findIndex((task) => task.id === overId);
 
-				tasks[activeIndex].status = tasks[overIndex].status;
+				const updatedTasks = [...tasks];
+				updatedTasks[activeIndex] = {
+					...updatedTasks[activeIndex],
+					status: tasks[overIndex].status,
+				};
 
-				return arrayMove(tasks, activeIndex, overIndex);
+				return arrayMove(updatedTasks, activeIndex, overIndex);
 			});
 		}
 
@@ -122,10 +127,15 @@ function Board() {
 		if (isActiveTask && isOverColumn) {
 			setTasks((tasks) => {
 				const activeIndex = tasks.findIndex((task) => task.id === activeId);
+				if (activeIndex === -1) return tasks;
 
-				tasks[activeIndex].status = over.data.current?.statusData.status;
+				const updatedTasks = [...tasks];
+				updatedTasks[activeIndex] = {
+					...updatedTasks[activeIndex],
+					status: over.data.current?.statusData.status,
+				};
 
-				return arrayMove(tasks, activeIndex, activeIndex);
+				return arrayMove(updatedTasks, activeIndex, activeIndex);
 			});
 		}
 	}
