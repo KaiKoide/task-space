@@ -1,12 +1,6 @@
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableFooter,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "@/components/ui/table";
+import { useState } from "react";
+import { Check, Plus } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import {
 	Command,
@@ -21,18 +15,25 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableFooter,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from "@/components/ui/table";
 import PopoverComponent from "./ui/popoverComponent";
 
-import tasksData from "@/mock/tasksData.json";
+import { cn } from "@/lib/utils";
 import groupData from "@/mock/groupsData.json";
 import statusData from "@/mock/statusData.json";
+import { useTaskStore } from "@/store/useStore";
 import type { ITask } from "@/types/data";
-import { useState } from "react";
-import { Check, Plus } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 function List() {
-	const [tasks, setTasks] = useState<ITask[]>(tasksData as ITask[]);
+	const { tasks } = useTaskStore();
 	const [openState, setOpenState] = useState<{ [key: string]: boolean }>({});
 	const [value, setValue] = useState<{ [key: string]: string }>({});
 

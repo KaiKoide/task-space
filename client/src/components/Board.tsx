@@ -16,14 +16,14 @@ import { createPortal } from "react-dom";
 import Column from "./ui/column";
 import SortableCard from "./ui/sortableCard";
 
-import tasksData from "@/mock/tasksData.json";
 import groupData from "@/mock/groupsData.json";
 import statusData from "@/mock/statusData.json";
+import { useTaskStore } from "@/store/useStore";
 import type { ITask, IStatus } from "@/types/data";
 
 function Board() {
 	const [columns, setColumns] = useState<IStatus[]>(statusData);
-	const [tasks, setTasks] = useState<ITask[]>(tasksData as ITask[]);
+	const { tasks, setTasks } = useTaskStore();
 	const [activeColumn, setActiveColumn] = useState<IStatus | null>(null);
 	const [activeTask, setActiveTask] = useState<ITask | null>(null);
 

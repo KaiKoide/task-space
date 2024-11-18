@@ -5,7 +5,7 @@ import type { ITask } from "@/types/data";
 
 interface TaskState {
 	tasks: ITask[];
-	setTasks: (newTasks: ITask[]) => void;
+	setTasks: (updater: ((tasks: ITask[]) => ITask[]) | ITask[]) => void;
 	addTask: (newTasks: ITask) => void;
 	deleteTask: (id: string) => void;
 	updateTask: (taskId: string, updatedTask: ITask) => void;
@@ -13,7 +13,10 @@ interface TaskState {
 
 const useTaskStore = create<TaskState>((set) => ({
 	tasks: tasksData as ITask[],
-	setTasks: (newTasks: ITask[]) => set({ tasks: newTasks }),
+	setTasks: (updater) =>
+		set((state) => ({
+			tasks: typeof updater === "function" ? updater(state.tasks) : updater,
+		})),
 	addTask: (newTask: ITask) =>
 		set((state) => ({ tasks: [...state.tasks, newTask] })),
 	deleteTask: (id: string) =>
