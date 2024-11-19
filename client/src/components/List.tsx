@@ -33,7 +33,7 @@ import { useTaskStore } from "@/store/useStore";
 import type { ITask } from "@/types/data";
 
 function List() {
-	const { tasks } = useTaskStore();
+	const { tasks, updateTask } = useTaskStore();
 	const [openState, setOpenState] = useState<{ [key: string]: boolean }>({});
 	const [value, setValue] = useState<{ [key: string]: string }>({});
 
@@ -49,9 +49,10 @@ function List() {
 		setOpenState((prev) => ({ ...prev, [taskId]: isOpen }));
 	}
 
-	function handleStatusSelect(taskId: string, newValue: string) {
+	function handleStatusSelect(taskId: string, newValue: ITask["status"]) {
 		setValue((prev) => ({ ...prev, [taskId]: newValue }));
 		setOpenState((prev) => ({ ...prev, [taskId]: false }));
+		updateTask(taskId, { status: newValue });
 	}
 
 	return (
@@ -114,7 +115,10 @@ function List() {
 																key={status.id}
 																value={status.status}
 																onSelect={() =>
-																	handleStatusSelect(task.id, status.status)
+																	handleStatusSelect(
+																		task.id,
+																		status.status as ITask["status"],
+																	)
 																}
 															>
 																{status.status.replace("_", " ")}

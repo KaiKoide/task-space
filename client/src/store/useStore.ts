@@ -8,7 +8,7 @@ interface TaskState {
 	setTasks: (updater: ((tasks: ITask[]) => ITask[]) | ITask[]) => void;
 	addTask: (newTasks: ITask) => void;
 	deleteTask: (id: string) => void;
-	updateTask: (taskId: string, updatedTask: ITask) => void;
+	updateTask: (taskId: string, updatedTask: Partial<ITask>) => void;
 }
 
 const useTaskStore = create<TaskState>((set) => ({
@@ -23,7 +23,7 @@ const useTaskStore = create<TaskState>((set) => ({
 		set((state) => ({
 			tasks: state.tasks.filter((task) => task.id !== id),
 		})),
-	updateTask: (taskId: string, updatedTask: ITask) =>
+	updateTask: (taskId: string, updatedTask: Partial<ITask>) =>
 		set((state) => ({
 			tasks: state.tasks.map((task) =>
 				task.id === taskId ? { ...task, ...updatedTask } : task,
