@@ -3,6 +3,7 @@ import "react-tabs/style/react-tabs.css";
 
 import List from "../List";
 import Board from "@/components/Board";
+import DialogComponent from "./dialogComponent";
 
 function TabsComponent() {
 	return (
@@ -26,6 +27,7 @@ function TabsComponent() {
 				>
 					Calendar
 				</Tab>
+				<DialogComponent />
 			</TabList>
 
 			<TabPanel>
