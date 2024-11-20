@@ -1,9 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { format } from "date-fns";
+import { Check, ChevronsUpDown, CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
 	Command,
 	CommandEmpty,
@@ -36,9 +38,12 @@ const formSchema = z.object({
 	title: z.string().min(2, {
 		message: "Username must be at least 2 characters.",
 	}),
-	desc: z.string(),
+	description: z.string(),
 	group: z.string({
 		required_error: "Please select a group.",
+	}),
+	dueDate: z.date({
+		required_error: "A due date is required.",
 	}),
 });
 
@@ -47,7 +52,7 @@ function TaskForm() {
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			title: "",
-			desc: "",
+			description: "",
 		},
 	});
 
@@ -136,7 +141,49 @@ function TaskForm() {
 				/>
 				<FormField
 					control={form.control}
-					name="desc"
+					name="dueDate"
+					render={({ field }) => (
+						<FormItem className="flex flex-col">
+							<FormLabel>Due date</FormLabel>
+							<Popover>
+								<PopoverTrigger asChild>
+									<FormControl>
+										<Button
+											variant={"outline"}
+											className={cn(
+												"w-[240px] pl-3 text-left font-normal rounded-md",
+												!field.value && "text-muted-foreground",
+											)}
+										>
+											{field.value ? (
+												format(field.value, "PPP")
+											) : (
+												<span>Pick a date</span>
+											)}
+											<CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+										</Button>
+									</FormControl>
+								</PopoverTrigger>
+								<PopoverContent
+									className="w-auto p-0 z-50 pointer-events-auto"
+									align="start"
+								>
+									<Calendar
+										mode="single"
+										selected={field.value}
+										onSelect={field.onChange}
+										disabled={(date) => date < new Date()}
+										initialFocus
+									/>
+								</PopoverContent>
+							</Popover>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="description"
 					render={({ field }) => (
 						<FormItem>
 							<FormLabel>Description</FormLabel>
