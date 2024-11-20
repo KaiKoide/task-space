@@ -3,6 +3,7 @@ import { CirclePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
+	DialogClose,
 	DialogContent,
 	DialogDescription,
 	DialogFooter,
@@ -10,6 +11,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
+import TaskForm from "./taskForm";
 
 function DialogComponent() {
 	return (
@@ -22,18 +24,15 @@ function DialogComponent() {
 			</DialogTrigger>
 			<DialogContent className="max-w-[425px]">
 				<DialogHeader>
-					<DialogTitle>Edit profile</DialogTitle>
-					<DialogDescription>
-						Make changes to your profile here. Click save when you're done.
-					</DialogDescription>
+					<DialogTitle>Add new task</DialogTitle>
 				</DialogHeader>
-				<div className="grid gap-4 py-4">
-					<p>Hello</p>
-				</div>
+				<TaskForm />
 				<DialogFooter>
-					<Button type="submit" variant="outline">
-						Save
-					</Button>
+					<DialogClose asChild>
+						<Button type="submit" variant="outline">
+							Save
+						</Button>
+					</DialogClose>
 				</DialogFooter>
 			</DialogContent>
 		</Dialog>
