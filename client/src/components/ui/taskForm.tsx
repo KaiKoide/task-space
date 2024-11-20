@@ -1,8 +1,17 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
+import {
+	Command,
+	CommandEmpty,
+	CommandGroup,
+	CommandInput,
+	CommandItem,
+	CommandList,
+} from "@/components/ui/command";
 import {
 	Form,
 	FormControl,
@@ -13,52 +22,31 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import { Textarea } from "@/components/ui/textarea";
+
 import { cn } from "@/lib/utils";
-import {
-	Command,
-	CommandEmpty,
-	CommandGroup,
-	CommandInput,
-	CommandItem,
-	CommandList,
-} from "@/components/ui/command";
-import { Check, ChevronsUpDown } from "lucide-react";
+import groupData from "@/mock/groupsData.json";
 
 const formSchema = z.object({
 	title: z.string().min(2, {
 		message: "Username must be at least 2 characters.",
 	}),
-	email: z.string(),
 	desc: z.string(),
-	language: z.string({
-		required_error: "Please select a language.",
+	group: z.string({
+		required_error: "Please select a group.",
 	}),
 });
-
-const languages = [
-	{ label: "English", value: "en" },
-	{ label: "French", value: "fr" },
-	{ label: "German", value: "de" },
-	{ label: "Spanish", value: "es" },
-	{ label: "Portuguese", value: "pt" },
-	{ label: "Russian", value: "ru" },
-	{ label: "Japanese", value: "ja" },
-	{ label: "Korean", value: "ko" },
-	{ label: "Chinese", value: "zh" },
-] as const;
 
 function TaskForm() {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			title: "",
-			email: "",
 			desc: "",
 		},
 	});
@@ -85,10 +73,10 @@ function TaskForm() {
 				/>
 				<FormField
 					control={form.control}
-					name="language"
+					name="group"
 					render={({ field }) => (
 						<FormItem className="flex flex-col">
-							<FormLabel>Language</FormLabel>
+							<FormLabel>Group</FormLabel>
 							<Popover>
 								<PopoverTrigger asChild>
 									<FormControl>
@@ -97,38 +85,37 @@ function TaskForm() {
 											// biome-ignore lint/a11y/useSemanticElements: <explanation>
 											role="combobox"
 											className={cn(
-												"w-[200px] justify-between",
+												"w-[200px] justify-between rounded-md",
 												!field.value && "text-muted-foreground",
 											)}
 										>
 											{field.value
-												? languages.find(
-														(language) => language.value === field.value,
-													)?.label
-												: "Select language"}
+												? groupData.find((group) => group.name === field.value)
+														?.name
+												: "Select group"}
 											<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 										</Button>
 									</FormControl>
 								</PopoverTrigger>
 								<PopoverContent className="w-[200px] p-0 pointer-events-auto">
 									<Command>
-										<CommandInput placeholder="Search language..." />
+										<CommandInput placeholder="Search group..." />
 										<CommandList>
-											<CommandEmpty>No language found.</CommandEmpty>
+											<CommandEmpty>No group found.</CommandEmpty>
 											<CommandGroup>
-												{languages.map((language) => (
+												{groupData.map((group) => (
 													<CommandItem
-														value={language.label}
-														key={language.value}
+														value={group.name}
+														key={group.id}
 														onSelect={() => {
-															form.setValue("language", language.value);
+															form.setValue("group", group.name);
 														}}
 													>
-														{language.label}
+														{group.name}
 														<Check
 															className={cn(
 																"ml-auto",
-																language.value === field.value
+																group.name === field.value
 																	? "opacity-100"
 																	: "opacity-0",
 															)}
@@ -142,22 +129,6 @@ function TaskForm() {
 							</Popover>
 							<FormDescription>
 								This is the language that will be used in the dashboard.
-							</FormDescription>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name="email"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Email</FormLabel>
-							<FormControl>
-								<Input placeholder="shadcn" {...field} />
-							</FormControl>
-							<FormDescription>
-								This is your public display name.
 							</FormDescription>
 							<FormMessage />
 						</FormItem>
