@@ -27,13 +27,13 @@ import {
 import PopoverMenu from "./ui/popoverMenu";
 
 import { cn } from "@/lib/utils";
-import groupData from "@/mock/groupsData.json";
 import statusData from "@/mock/statusData.json";
-import { useTaskStore } from "@/store/useStore";
+import { useTaskStore, useGroupStore } from "@/store/useStore";
 import type { ITask } from "@/types/data";
 
 function List() {
 	const { tasks, updateTask } = useTaskStore();
+	const { groups } = useGroupStore();
 	const [openState, setOpenState] = useState<{ [key: string]: boolean }>({});
 	const [value, setValue] = useState<{ [key: string]: string }>({});
 
@@ -44,6 +44,8 @@ function List() {
 		acc[task.group_id].push(task);
 		return acc;
 	}, {});
+
+	console.log("tasks", tasks);
 
 	function handleOpenChange(taskId: string, isOpen: boolean) {
 		setOpenState((prev) => ({ ...prev, [taskId]: isOpen }));
@@ -74,7 +76,7 @@ function List() {
 				</TableRow>
 			</TableHeader>
 			<TableBody>
-				{groupData.map((group) => (
+				{groups.map((group) => (
 					<>
 						<TableRow key={group.id} className="bg-gray-100">
 							<TableCell colSpan={4} className="font-semibold text-left">

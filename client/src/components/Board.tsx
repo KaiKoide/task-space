@@ -16,14 +16,14 @@ import { createPortal } from "react-dom";
 import Column from "./ui/column";
 import SortableCard from "./ui/sortableCard";
 
-import groupData from "@/mock/groupsData.json";
 import statusData from "@/mock/statusData.json";
-import { useTaskStore } from "@/store/useStore";
+import { useTaskStore, useGroupStore } from "@/store/useStore";
 import type { ITask, IStatus } from "@/types/data";
 
 function Board() {
 	const [columns, setColumns] = useState<IStatus[]>(statusData);
 	const { tasks, setTasks } = useTaskStore();
+	const { groups } = useGroupStore();
 	const [activeColumn, setActiveColumn] = useState<IStatus | null>(null);
 	const [activeTask, setActiveTask] = useState<ITask | null>(null);
 
@@ -35,10 +35,12 @@ function Board() {
 		return acc;
 	}, {});
 
-	const groups = groupData.reduce((acc: Record<string, string>, group) => {
+	const groupsObj = groups.reduce((acc: Record<string, string>, group) => {
 		acc[group.id] = group.name;
 		return acc;
 	}, {});
+
+	console.log("groupsObj", groupsObj);
 
 	const columnsId = useMemo(
 		() => columns.map((status) => status.id),
@@ -155,7 +157,7 @@ function Board() {
 							key={status.id}
 							statusData={status}
 							groupedTasks={groupedTasks}
-							groups={groups}
+							groups={groupsObj}
 							isDragging={false}
 						/>
 					))}
@@ -167,14 +169,14 @@ function Board() {
 						<Column
 							statusData={activeColumn}
 							groupedTasks={groupedTasks}
-							groups={groups}
+							groups={groupsObj}
 							isDragging={true}
 						/>
 					)}
 					{activeTask && (
 						<SortableCard
 							task={activeTask}
-							groupName={groups[activeTask.group_id]}
+							groupName={groupsObj[activeTask.group_id]}
 						/>
 					)}
 				</DragOverlay>,

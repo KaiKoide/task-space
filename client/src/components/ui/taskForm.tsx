@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { Check, ChevronsUpDown, CalendarIcon } from "lucide-react";
+import { Check, ChevronsUpDown, CalendarIcon, CirclePlus } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
@@ -31,9 +32,8 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 
-import { useTaskStore } from "@/store/useStore";
+import { useTaskStore, useGroupStore } from "@/store/useStore";
 import { cn } from "@/lib/utils";
-import groupData from "@/mock/groupsData.json";
 
 const formSchema = z.object({
 	title: z.string().min(2, {
@@ -49,7 +49,9 @@ const formSchema = z.object({
 });
 
 function TaskForm() {
+	const [newGroupName, setNewGroupName] = useState("");
 	const { addTask } = useTaskStore();
+	const { groups, addGroup } = useGroupStore();
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -65,12 +67,26 @@ function TaskForm() {
 			title: values.title,
 			description: values.description,
 			due_date: values.dueDate.toISOString(),
-			group_id: groupData.find((group) => group.name === values.group)?.id,
+			group_id: groups.find((group) => group.name === values.group)?.id,
 			created_at: new Date().toISOString(),
 			status: "todo" as const,
 			created_by: "a1b2c3d4-5678-90ab-cdef-1234567890ab",
 		};
 		addTask(newTask);
+	}
+
+	function handleAddGroup() {
+		const newGroup = {
+			id: uuidv4().toString(),
+			name: newGroupName,
+			created_at: new Date().toISOString(),
+		};
+		addGroup(newGroup);
+		console.log(newGroup);
+	}
+
+	function handleChange(e: React.FormEvent<HTMLInputElement>) {
+		setNewGroupName(e.currentTarget.value);
 	}
 
 	return (
@@ -108,7 +124,7 @@ function TaskForm() {
 											)}
 										>
 											{field.value
-												? groupData.find((group) => group.name === field.value)
+												? groups.find((group) => group.name === field.value)
 														?.name
 												: "Select group"}
 											<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -117,11 +133,19 @@ function TaskForm() {
 								</PopoverTrigger>
 								<PopoverContent className="w-[200px] p-0 pointer-events-auto">
 									<Command>
-										<CommandInput placeholder="Search group..." />
+										<CommandInput
+											placeholder="Search group..."
+											onInput={handleChange}
+										/>
 										<CommandList>
-											<CommandEmpty>No group found.</CommandEmpty>
+											<CommandEmpty onClick={handleAddGroup}>
+												<div className="flex items-center justify-center gap-1 text-custom-default">
+													<CirclePlus strokeWidth={1.5} className="font-bold" />
+													Add new group
+												</div>
+											</CommandEmpty>
 											<CommandGroup>
-												{groupData.map((group) => (
+												{groups.map((group) => (
 													<CommandItem
 														value={group.name}
 														key={group.id}
