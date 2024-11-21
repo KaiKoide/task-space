@@ -1,7 +1,8 @@
 import { create } from "zustand";
 
 import tasksData from "@/mock/tasksData.json";
-import type { ITask } from "@/types/data";
+import groupsData from "@/mock/groupsData.json";
+import type { ITask, IGroup } from "@/types/data";
 
 interface TaskState {
 	tasks: ITask[];
@@ -9,6 +10,13 @@ interface TaskState {
 	addTask: (newTasks: ITask) => void;
 	deleteTask: (id: string) => void;
 	updateTask: (taskId: string, updatedTask: Partial<ITask>) => void;
+}
+
+interface GroupState {
+	groups: IGroup[];
+	addGroup: (newGroup: IGroup) => void;
+	deleteGroup: (groupId: string) => void;
+	updateGroup: (groupId: string, updatedGroup: Partial<IGroup>) => void;
 }
 
 const useTaskStore = create<TaskState>((set) => ({
@@ -31,4 +39,20 @@ const useTaskStore = create<TaskState>((set) => ({
 		})),
 }));
 
-export { useTaskStore };
+const useGroupStore = create<GroupState>((set) => ({
+	groups: groupsData as IGroup[],
+	addGroup: (newGroup: IGroup) =>
+		set((state) => ({ groups: [...state.groups, newGroup] })),
+	deleteGroup: (groupId: string) =>
+		set((state) => ({
+			groups: state.groups.filter((group) => group.id !== groupId),
+		})),
+	updateGroup: (groupId: string, updatedGroup: Partial<IGroup>) =>
+		set((state) => ({
+			groups: state.groups.map((group) =>
+				group.id === groupId ? { ...group, ...updatedGroup } : group,
+			),
+		})),
+}));
+
+export { useTaskStore, useGroupStore };
