@@ -38,10 +38,11 @@ function List() {
 	const [value, setValue] = useState<{ [key: string]: string }>({});
 
 	const groupedTasks = tasks.reduce((acc: Record<string, ITask[]>, task) => {
-		if (!acc[task.group_id]) {
-			acc[task.group_id] = [];
+		const groupId = task.group_id || "no_group";
+		if (!acc[groupId]) {
+			acc[groupId] = [];
 		}
-		acc[task.group_id].push(task);
+		acc[groupId].push(task);
 		return acc;
 	}, {});
 

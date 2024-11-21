@@ -176,7 +176,11 @@ function Board() {
 					{activeTask && (
 						<SortableCard
 							task={activeTask}
-							groupName={groupsObj[activeTask.group_id]}
+							groupName={
+								activeTask.group_id
+									? groupsObj[activeTask.group_id]
+									: "No Group"
+							}
 						/>
 					)}
 				</DragOverlay>,

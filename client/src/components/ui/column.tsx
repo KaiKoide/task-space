@@ -66,7 +66,7 @@ function Column({ statusData, groupedTasks, groups, isDragging }: ColumnProps) {
 					<SortableCard
 						key={task.id}
 						task={task}
-						groupName={groups[task.group_id]}
+						groupName={task.group_id ? groups[task.group_id] : "No Group"}
 					/>
 				))}
 			</SortableContext>
