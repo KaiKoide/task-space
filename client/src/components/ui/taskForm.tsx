@@ -83,7 +83,6 @@ function TaskForm({ onSave }: { onSave: () => void }) {
 			created_at: new Date().toISOString(),
 		};
 		addGroup(newGroup);
-		console.log(newGroup);
 	}
 
 	function handleChange(e: React.FormEvent<HTMLInputElement>) {
