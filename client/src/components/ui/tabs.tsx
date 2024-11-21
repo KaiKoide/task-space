@@ -1,11 +1,16 @@
+import { CirclePlus } from "lucide-react";
+import { useState } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 
-import List from "../List";
 import Board from "@/components/Board";
+import { Button } from "@/components/ui/button";
 import DialogComponent from "./dialogComponent";
+import List from "../List";
 
 function TabsComponent() {
+	const [open, setOpen] = useState(false);
+
 	return (
 		<Tabs className="absolute top-12 left-0 w-full mx-10">
 			<TabList className="flex border-b border-custom-default gap-3">
@@ -27,7 +32,15 @@ function TabsComponent() {
 				>
 					Calendar
 				</Tab>
-				<DialogComponent />
+				<Button
+					onClick={() => setOpen(true)}
+					variant="outline"
+					className="font-bold"
+				>
+					<CirclePlus />
+					New Task
+				</Button>
+				<DialogComponent open={open} setOpen={setOpen} />
 			</TabList>
 
 			<TabPanel>

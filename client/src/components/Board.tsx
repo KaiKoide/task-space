@@ -40,8 +40,6 @@ function Board() {
 		return acc;
 	}, {});
 
-	console.log("groupsObj", groupsObj);
-
 	const columnsId = useMemo(
 		() => columns.map((status) => status.id),
 		[columns],

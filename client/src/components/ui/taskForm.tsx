@@ -48,7 +48,7 @@ const formSchema = z.object({
 	}),
 });
 
-function TaskForm() {
+function TaskForm({ onSave }: { onSave: () => void }) {
 	const [newGroupName, setNewGroupName] = useState("");
 	const { addTask } = useTaskStore();
 	const { groups, addGroup } = useGroupStore();
@@ -73,6 +73,7 @@ function TaskForm() {
 			created_by: "a1b2c3d4-5678-90ab-cdef-1234567890ab",
 		};
 		addTask(newTask);
+		onSave();
 	}
 
 	function handleAddGroup() {
@@ -232,7 +233,9 @@ function TaskForm() {
 						</FormItem>
 					)}
 				/>
-				<Button type="submit">Submit</Button>
+				<div className="flex justify-end">
+					<Button type="submit">Submit</Button>
+				</div>
 			</form>
 		</Form>
 	);
