@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { Check, ChevronsUpDown, CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -17,7 +18,6 @@ import {
 import {
 	Form,
 	FormControl,
-	FormDescription,
 	FormField,
 	FormItem,
 	FormLabel,
@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 
+import { useTaskStore } from "@/store/useStore";
 import { cn } from "@/lib/utils";
 import groupData from "@/mock/groupsData.json";
 
@@ -48,6 +49,8 @@ const formSchema = z.object({
 });
 
 function TaskForm() {
+	const { addTask } = useTaskStore();
+
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -57,7 +60,17 @@ function TaskForm() {
 	});
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
-		console.log(values);
+		const newTask = {
+			id: uuidv4().toString(),
+			title: values.title,
+			description: values.description,
+			due_date: values.dueDate.toISOString(),
+			group_id: groupData.find((group) => group.name === values.group)?.id,
+			created_at: new Date().toISOString(),
+			status: "todo" as const,
+			created_by: "a1b2c3d4-5678-90ab-cdef-1234567890ab",
+		};
+		addTask(newTask);
 	}
 
 	return (
@@ -90,7 +103,7 @@ function TaskForm() {
 											// biome-ignore lint/a11y/useSemanticElements: <explanation>
 											role="combobox"
 											className={cn(
-												"w-[200px] justify-between rounded-md",
+												"w-[200px] justify-between rounded-md px-3 font-normal",
 												!field.value && "text-muted-foreground",
 											)}
 										>
@@ -132,9 +145,6 @@ function TaskForm() {
 									</Command>
 								</PopoverContent>
 							</Popover>
-							<FormDescription>
-								This is the language that will be used in the dashboard.
-							</FormDescription>
 							<FormMessage />
 						</FormItem>
 					)}
@@ -188,7 +198,11 @@ function TaskForm() {
 						<FormItem>
 							<FormLabel>Description</FormLabel>
 							<FormControl>
-								<Textarea placeholder="Description" {...field} />
+								<Textarea
+									placeholder="Description"
+									className="resize-none"
+									{...field}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
