@@ -5,13 +5,21 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import TaskForm from "./taskForm";
+import type { ITask } from "@/types/data";
 
 interface DialogComponentProps {
 	open: boolean;
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+	isEdit?: boolean;
+	task?: ITask;
 }
 
-function DialogComponent({ open, setOpen }: DialogComponentProps) {
+function DialogComponent({
+	open,
+	setOpen,
+	isEdit = false,
+	task,
+}: DialogComponentProps) {
 	function handleCloseDialog() {
 		setOpen(false);
 	}
@@ -20,9 +28,9 @@ function DialogComponent({ open, setOpen }: DialogComponentProps) {
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogContent className="max-w-[425px]">
 				<DialogHeader>
-					<DialogTitle>Add new task</DialogTitle>
+					<DialogTitle>{isEdit ? "Edit task" : "Add new task"}</DialogTitle>
 				</DialogHeader>
-				<TaskForm onSave={handleCloseDialog} />
+				<TaskForm onSave={handleCloseDialog} task={task} />
 			</DialogContent>
 		</Dialog>
 	);

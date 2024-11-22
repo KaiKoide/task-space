@@ -1,6 +1,7 @@
 import { Ellipsis, Trash2, NotebookPen } from "lucide-react";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 
+import { Button } from "@/components/ui/button";
 import {
 	Dialog,
 	DialogClose,
@@ -11,12 +12,12 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
+import DialogComponent from "@/components/ui/dialogComponent";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { Button } from "./button";
 
 import { useTaskStore } from "@/store/useStore";
 import type { ITask } from "@/types/data";
@@ -28,6 +29,7 @@ interface PopoverMenuProps {
 
 function PopoverMenu({ task, children }: PopoverMenuProps) {
 	const { deleteTask } = useTaskStore();
+	const [open, setOpen] = useState(false);
 
 	function handleClickOption(option: string) {
 		switch (option) {
@@ -35,7 +37,7 @@ function PopoverMenu({ task, children }: PopoverMenuProps) {
 				deleteTask(task.id);
 				break;
 			case "edit":
-				console.log("edit!!!");
+				setOpen(true);
 				break;
 		}
 	}
@@ -89,6 +91,12 @@ function PopoverMenu({ task, children }: PopoverMenuProps) {
 				</PopoverContent>
 				{children}
 			</div>
+			<DialogComponent
+				open={open}
+				setOpen={setOpen}
+				isEdit={true}
+				task={task}
+			/>
 		</Popover>
 	);
 }

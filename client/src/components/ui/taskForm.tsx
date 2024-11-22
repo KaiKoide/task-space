@@ -34,6 +34,12 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { useTaskStore, useGroupStore } from "@/store/useStore";
 import { cn } from "@/lib/utils";
+import type { ITask } from "@/types/data";
+
+interface TaskFormProps {
+	onSave: () => void;
+	task?: ITask;
+}
 
 const formSchema = z.object({
 	title: z.string().min(2, {
@@ -48,31 +54,41 @@ const formSchema = z.object({
 	}),
 });
 
-function TaskForm({ onSave }: { onSave: () => void }) {
+function TaskForm({ onSave, task }: TaskFormProps) {
 	const [newGroupName, setNewGroupName] = useState("");
-	const { addTask } = useTaskStore();
+	const { addTask, updateTask } = useTaskStore();
 	const { groups, addGroup } = useGroupStore();
+
+	const groupName = groups.find((group) => group.id === task?.group_id)?.name;
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			title: "",
-			description: "",
+			title: task?.title || "",
+			description: task?.description || "",
+			group: task ? groupName : "",
+			dueDate: task?.due_date ? new Date(task.due_date) : undefined,
 		},
 	});
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
 		const newTask = {
-			id: uuidv4().toString(),
+			id: task?.id || uuidv4().toString(),
 			title: values.title,
 			description: values.description,
-			due_date: values.dueDate.toISOString(),
+			due_date: values.dueDate
+				? values.dueDate.toISOString()
+				: task?.due_date || new Date().toISOString(),
 			group_id: groups.find((group) => group.name === values.group)?.id,
-			created_at: new Date().toISOString(),
-			status: "todo" as const,
-			created_by: "a1b2c3d4-5678-90ab-cdef-1234567890ab",
+			created_at: task?.created_at || new Date().toISOString(),
+			status: task?.status || ("todo" as const),
+			created_by: task?.created_by || "a1b2c3d4-5678-90ab-cdef-1234567890ab",
 		};
-		addTask(newTask);
+		if (task) {
+			updateTask(task.id, newTask);
+		} else {
+			addTask(newTask);
+		}
 		onSave();
 	}
 
@@ -120,13 +136,16 @@ function TaskForm({ onSave }: { onSave: () => void }) {
 											role="combobox"
 											className={cn(
 												"w-[200px] justify-between rounded-md px-3 font-normal",
-												!field.value && "text-muted-foreground",
+												!(field.value || task?.group_id) &&
+													"text-muted-foreground",
 											)}
 										>
 											{field.value
 												? groups.find((group) => group.name === field.value)
 														?.name
-												: "Select group"}
+												: task?.group_id
+													? groupName
+													: "Select group"}
 											<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 										</Button>
 									</FormControl>
@@ -189,11 +208,9 @@ function TaskForm({ onSave }: { onSave: () => void }) {
 												!field.value && "text-muted-foreground",
 											)}
 										>
-											{field.value ? (
-												format(field.value, "PPP")
-											) : (
-												<span>Pick a date</span>
-											)}
+											{field.value
+												? format(field.value, "PPP")
+												: task?.due_date || <span>Pick a date</span>}
 											<CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
 										</Button>
 									</FormControl>
@@ -233,7 +250,7 @@ function TaskForm({ onSave }: { onSave: () => void }) {
 					)}
 				/>
 				<div className="flex justify-end">
-					<Button type="submit">Submit</Button>
+					<Button type="submit">{task ? "Update Task" : "Create Task"}</Button>
 				</div>
 			</form>
 		</Form>
