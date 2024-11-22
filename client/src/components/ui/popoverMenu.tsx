@@ -23,22 +23,27 @@ import { useTaskStore } from "@/store/useStore";
 import type { ITask } from "@/types/data";
 
 interface PopoverMenuProps {
-	task: ITask;
-	children: ReactNode;
+	type: "task" | "column" | "list";
+	data?: ITask;
+	children?: ReactNode;
 }
 
-function PopoverMenu({ task, children }: PopoverMenuProps) {
+function PopoverMenu({ type, data, children }: PopoverMenuProps) {
 	const { deleteTask } = useTaskStore();
 	const [open, setOpen] = useState(false);
 
 	function handleClickOption(option: string) {
-		switch (option) {
-			case "delete":
-				deleteTask(task.id);
-				break;
-			case "edit":
-				setOpen(true);
-				break;
+		if (type === "task") {
+			switch (option) {
+				case "delete":
+					if (data) {
+						deleteTask(data.id);
+					}
+					break;
+				case "edit":
+					setOpen(true);
+					break;
+			}
 		}
 	}
 
@@ -95,7 +100,7 @@ function PopoverMenu({ task, children }: PopoverMenuProps) {
 				open={open}
 				setOpen={setOpen}
 				isEdit={true}
-				task={task}
+				task={data}
 			/>
 		</Popover>
 	);

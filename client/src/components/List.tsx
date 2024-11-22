@@ -85,7 +85,9 @@ function List() {
 						{groupedTasks[group.id]?.map((task) => (
 							<TableRow key={task.id}>
 								<TableCell className="font-medium text-left">
-									<PopoverMenu task={task}>{task.title}</PopoverMenu>
+									<PopoverMenu type={"task"} data={task}>
+										{task.title}
+									</PopoverMenu>
 								</TableCell>
 								<TableCell className="capitalize border-x border-custom-default/30">
 									<Popover

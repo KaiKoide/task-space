@@ -3,8 +3,9 @@ import { CSS } from "@dnd-kit/utilities";
 import { Ellipsis } from "lucide-react";
 import { useMemo } from "react";
 
-import { Badge } from "./badge";
-import SortableCard from "./sortableCard";
+import { Badge } from "@/components/ui/badge";
+import PopoverMenu from "@/components/ui/popoverMenu";
+import SortableCard from "@/components/ui/sortableCard";
 
 import { cn } from "@/lib/utils";
 import type { ITask, IStatus } from "@/types/data";
@@ -21,10 +22,6 @@ function Column({ statusData, groupedTasks, groups, isDragging }: ColumnProps) {
 		() => (groupedTasks[statusData.status] || []).map((task) => task.id),
 		[groupedTasks],
 	);
-
-	function handleDelete() {
-		console.log("click!");
-	}
 
 	const { setNodeRef, attributes, listeners, transform, transition } =
 		useSortable({
@@ -56,10 +53,9 @@ function Column({ statusData, groupedTasks, groups, isDragging }: ColumnProps) {
 			>
 				{statusData.status.replace("_", " ")}
 			</Badge>
-			<Ellipsis
-				className="absolute m-3 top-1 right-2 cursor-pointer"
-				onClick={handleDelete}
-			/>
+			<div className="absolute m-3 top-1 right-2 cursor-pointer">
+				<PopoverMenu type={"column"} />
+			</div>
 
 			<SortableContext items={taskIds}>
 				{(groupedTasks[statusData.status] || []).map((task) => (

@@ -8,8 +8,8 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "./badge";
-import PopoverMenu from "./popoverMenu";
+import { Badge } from "@/components/ui/badge";
+import PopoverMenu from "@/components/ui/popoverMenu";
 
 import type { ITask } from "@/types/data";
 interface SortableCardProps {
@@ -50,7 +50,9 @@ function SortableCard({ task, groupName }: SortableCardProps) {
 		>
 			<CardHeader>
 				<CardTitle className="text-custom-default">
-					<PopoverMenu task={task}>{task.title}</PopoverMenu>
+					<PopoverMenu type={"task"} data={task}>
+						{task.title}
+					</PopoverMenu>
 				</CardTitle>
 				<Badge>{groupName}</Badge>
 				<CardDescription>{task.due_date}</CardDescription>
