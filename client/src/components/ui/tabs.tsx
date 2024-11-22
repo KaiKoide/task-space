@@ -5,7 +5,7 @@ import "react-tabs/style/react-tabs.css";
 
 import Board from "@/components/Board";
 import { Button } from "@/components/ui/button";
-import DialogComponent from "./dialogComponent";
+import TaskDialog from "@/components/ui/taskDialog";
 import List from "../List";
 
 function TabsComponent() {
@@ -40,7 +40,7 @@ function TabsComponent() {
 					<CirclePlus />
 					New Task
 				</Button>
-				<DialogComponent open={open} setOpen={setOpen} />
+				<TaskDialog open={open} setOpen={setOpen} />
 			</TabList>
 
 			<TabPanel>

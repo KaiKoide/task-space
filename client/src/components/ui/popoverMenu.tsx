@@ -1,4 +1,4 @@
-import { Ellipsis, Trash2, NotebookPen } from "lucide-react";
+import { Ellipsis, Trash2, NotebookPen, Ghost } from "lucide-react";
 import { useState, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import DialogComponent from "@/components/ui/dialogComponent";
+import TaskDialog from "@/components/ui/taskDialog";
 import {
 	Popover,
 	PopoverContent,
@@ -32,6 +32,7 @@ function PopoverMenu({ type, data, children }: PopoverMenuProps) {
 	const { deleteTask, setTasks } = useTaskStore();
 	const { deleteGroup } = useGroupStore();
 	const [open, setOpen] = useState(false);
+	const [isEditGroupName, setIsEditGroupName] = useState(false);
 
 	function handleClickOption(option: string) {
 		if (type === "task") {
@@ -85,9 +86,14 @@ function PopoverMenu({ type, data, children }: PopoverMenuProps) {
 						</DialogTrigger>
 						<DialogContent className="sm:max-w-[425px]">
 							<DialogHeader>
-								<DialogTitle>Confirm Delete</DialogTitle>
-								<DialogDescription>
-									Do you really want to delete?
+								<DialogTitle className="flex items-center">
+									<Ghost />
+									Confirm Delete
+									<Ghost />
+								</DialogTitle>
+								<DialogDescription className="flex items-center">
+									<Ghost />
+									&lt; Do you really want to delete?
 								</DialogDescription>
 							</DialogHeader>
 
@@ -110,7 +116,7 @@ function PopoverMenu({ type, data, children }: PopoverMenuProps) {
 				</PopoverContent>
 				{children}
 			</div>
-			<DialogComponent
+			<TaskDialog
 				open={open}
 				setOpen={setOpen}
 				isEdit={true}

@@ -1,6 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { Check, ChevronsUpDown, CalendarIcon, CirclePlus } from "lucide-react";
+import {
+	Check,
+	ChevronsUpDown,
+	CalendarIcon,
+	CirclePlus,
+	PawPrint,
+} from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
@@ -250,7 +256,10 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 					)}
 				/>
 				<div className="flex justify-end">
-					<Button type="submit">{task ? "Update Task" : "Create Task"}</Button>
+					<Button type="submit" className="flex items-center gap-1">
+						{task ? "Update Task" : "Create Task"}
+						<PawPrint />
+					</Button>
 				</div>
 			</form>
 		</Form>
