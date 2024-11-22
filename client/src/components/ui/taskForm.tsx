@@ -77,7 +77,7 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 			title: values.title,
 			description: values.description,
 			due_date: values.dueDate
-				? values.dueDate.toISOString()
+				? format(values.dueDate, "yyyy-MM-dd")
 				: task?.due_date || new Date().toISOString(),
 			group_id: groups.find((group) => group.name === values.group)?.id,
 			created_at: task?.created_at || new Date().toISOString(),
@@ -209,7 +209,7 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 											)}
 										>
 											{field.value
-												? format(field.value, "PPP")
+												? format(field.value, "yyyy-MM-dd")
 												: task?.due_date || <span>Pick a date</span>}
 											<CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
 										</Button>

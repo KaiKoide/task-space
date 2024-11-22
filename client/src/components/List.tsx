@@ -46,8 +46,6 @@ function List() {
 		return acc;
 	}, {});
 
-	console.log("tasks", tasks);
-
 	function handleOpenChange(taskId: string, isOpen: boolean) {
 		setOpenState((prev) => ({ ...prev, [taskId]: isOpen }));
 	}
