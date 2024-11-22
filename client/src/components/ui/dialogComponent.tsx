@@ -11,7 +11,7 @@ interface DialogComponentProps {
 	open: boolean;
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 	isEdit?: boolean;
-	task?: ITask;
+	task?: ITask | undefined;
 }
 
 function DialogComponent({
