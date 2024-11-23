@@ -16,12 +16,11 @@ import { createPortal } from "react-dom";
 import Column from "./ui/column";
 import SortableCard from "./ui/sortableCard";
 
-import statusData from "@/mock/statusData.json";
-import { useTaskStore, useGroupStore } from "@/store/useStore";
+import { useTaskStore, useGroupStore, useStatusStore } from "@/store/useStore";
 import type { ITask, IStatus } from "@/types/data";
 
 function Board() {
-	const [columns, setColumns] = useState<IStatus[]>(statusData);
+	const { statuses, setStatus } = useStatusStore();
 	const { tasks, setTasks } = useTaskStore();
 	const { groups } = useGroupStore();
 	const [activeColumn, setActiveColumn] = useState<IStatus | null>(null);
@@ -41,8 +40,8 @@ function Board() {
 	}, {});
 
 	const columnsId = useMemo(
-		() => columns.map((status) => status.id),
-		[columns],
+		() => statuses.map((status) => status.id),
+		[statuses],
 	);
 
 	const sensors = useSensors(
@@ -65,16 +64,16 @@ function Board() {
 
 		if (activeColumnId === overColumnId) return;
 
-		setColumns((columns) => {
-			const activeColumnIndex = columns.findIndex(
+		setStatus((statuses) => {
+			const activeColumnIndex = statuses.findIndex(
 				(column) => column.id === activeColumnId,
 			);
 
-			const overColumnIndex = columns.findIndex(
+			const overColumnIndex = statuses.findIndex(
 				(column) => column.id === overColumnId,
 			);
 
-			return arrayMove(columns, activeColumnIndex, overColumnIndex);
+			return arrayMove(statuses, activeColumnIndex, overColumnIndex);
 		});
 	}
 
@@ -150,7 +149,7 @@ function Board() {
 		>
 			<div className="flex justify-evenly gap-4 p-4">
 				<SortableContext items={columnsId}>
-					{columns.map((status) => (
+					{statuses.map((status) => (
 						<Column
 							key={status.id}
 							statusData={status}

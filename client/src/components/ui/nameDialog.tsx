@@ -7,6 +7,7 @@ import {
 
 import type { IGroup } from "@/types/data";
 import NameForm from "./nameForm";
+import { Rat } from "lucide-react";
 
 interface NameDialogProps {
 	open: boolean;
@@ -23,7 +24,10 @@ function NameDialog({ open, setOpen, data }: NameDialogProps) {
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogContent className="sm:max-w-[425px]">
 				<DialogHeader>
-					<DialogTitle>Edit Name</DialogTitle>
+					<DialogTitle className="flex items-center gap-2">
+						<Rat />
+						Edit Name
+					</DialogTitle>
 				</DialogHeader>
 				<NameForm onSave={handleCloseDialog} data={data} />
 			</DialogContent>

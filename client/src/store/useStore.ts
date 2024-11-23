@@ -22,6 +22,9 @@ interface GroupState {
 
 interface StatusState {
 	statuses: IStatus[];
+	setStatus: (
+		updater: ((statuses: IStatus[]) => IStatus[]) | IStatus[],
+	) => void;
 	deleteStatus: (statusId: number) => void;
 	updateStatus: (statusId: number, updatedStatus: string) => void;
 }
@@ -62,8 +65,13 @@ const useGroupStore = create<GroupState>((set) => ({
 		})),
 }));
 
-const useStatus = create<StatusState>((set) => ({
+const useStatusStore = create<StatusState>((set) => ({
 	statuses: statusData as IStatus[],
+	setStatus: (updater) =>
+		set((state) => ({
+			statuses:
+				typeof updater === "function" ? updater(state.statuses) : updater,
+		})),
 	deleteStatus: (deleteId: number) =>
 		set((state) => ({
 			statuses: state.statuses.filter((state) => state.id !== deleteId),
@@ -76,4 +84,4 @@ const useStatus = create<StatusState>((set) => ({
 		})),
 }));
 
-export { useTaskStore, useGroupStore, useStatus };
+export { useTaskStore, useGroupStore, useStatusStore };
