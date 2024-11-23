@@ -25,8 +25,8 @@ interface StatusState {
 	setStatus: (
 		updater: ((statuses: IStatus[]) => IStatus[]) | IStatus[],
 	) => void;
-	deleteStatus: (statusId: number) => void;
-	updateStatus: (statusId: number, updatedStatus: string) => void;
+	deleteStatus: (statusId: string) => void;
+	updateStatus: (statusId: string, updatedStatus: string) => void;
 }
 
 const useTaskStore = create<TaskState>((set) => ({

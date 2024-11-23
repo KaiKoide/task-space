@@ -12,7 +12,7 @@ export interface IGroupMembers {
 }
 
 export interface IStatus {
-	id: number;
+	id: string;
 	status: string;
 }
 
