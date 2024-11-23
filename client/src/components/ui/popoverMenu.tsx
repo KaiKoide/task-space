@@ -12,19 +12,20 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import TaskDialog from "@/components/ui/taskDialog";
+import NameDialog from "@/components/ui/nameDialog";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import TaskDialog from "@/components/ui/taskDialog";
 
 import { useTaskStore, useGroupStore } from "@/store/useStore";
 import type { IGroup, ITask } from "@/types/data";
 
 interface PopoverMenuProps {
 	type: "task" | "column" | "list";
-	data?: ITask | IGroup;
+	data: ITask | IGroup;
 	children?: ReactNode;
 }
 
@@ -57,6 +58,7 @@ function PopoverMenu({ type, data, children }: PopoverMenuProps) {
 					}
 					break;
 				case "edit":
+					setIsEditGroupName(true);
 					break;
 			}
 		}
@@ -121,6 +123,11 @@ function PopoverMenu({ type, data, children }: PopoverMenuProps) {
 				setOpen={setOpen}
 				isEdit={true}
 				task={type === "task" && data && "title" in data ? data : undefined}
+			/>
+			<NameDialog
+				open={isEditGroupName}
+				setOpen={setIsEditGroupName}
+				data={data as IGroup}
 			/>
 		</Popover>
 	);

@@ -16,7 +16,7 @@ interface GroupState {
 	groups: IGroup[];
 	addGroup: (newGroup: IGroup) => void;
 	deleteGroup: (groupId: string) => void;
-	updateGroup: (groupId: string, updatedGroup: Partial<IGroup>) => void;
+	updateGroup: (groupId: string, updatedGroup: string) => void;
 }
 
 const useTaskStore = create<TaskState>((set) => ({
@@ -47,10 +47,10 @@ const useGroupStore = create<GroupState>((set) => ({
 		set((state) => ({
 			groups: state.groups.filter((group) => group.id !== groupId),
 		})),
-	updateGroup: (groupId: string, updatedGroup: Partial<IGroup>) =>
+	updateGroup: (groupId: string, updatedGroup: string) =>
 		set((state) => ({
 			groups: state.groups.map((group) =>
-				group.id === groupId ? { ...group, ...updatedGroup } : group,
+				group.id === groupId ? { ...group, name: updatedGroup } : group,
 			),
 		})),
 }));

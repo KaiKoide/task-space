@@ -15,6 +15,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import PopoverMenu from "@/components/ui/popoverMenu";
 import {
 	Table,
 	TableBody,
@@ -24,7 +25,6 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import PopoverMenu from "./ui/popoverMenu";
 
 import { cn } from "@/lib/utils";
 import statusData from "@/mock/statusData.json";
