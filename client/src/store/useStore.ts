@@ -2,7 +2,8 @@ import { create } from "zustand";
 
 import tasksData from "@/mock/tasksData.json";
 import groupsData from "@/mock/groupsData.json";
-import type { ITask, IGroup } from "@/types/data";
+import statusData from "@/mock/statusData.json";
+import type { ITask, IGroup, IStatus } from "@/types/data";
 
 interface TaskState {
 	tasks: ITask[];
@@ -17,6 +18,12 @@ interface GroupState {
 	addGroup: (newGroup: IGroup) => void;
 	deleteGroup: (groupId: string) => void;
 	updateGroup: (groupId: string, updatedGroup: string) => void;
+}
+
+interface StatusState {
+	statuses: IStatus[];
+	deleteStatus: (statusId: number) => void;
+	updateStatus: (statusId: number, updatedStatus: string) => void;
 }
 
 const useTaskStore = create<TaskState>((set) => ({
@@ -55,4 +62,18 @@ const useGroupStore = create<GroupState>((set) => ({
 		})),
 }));
 
-export { useTaskStore, useGroupStore };
+const useStatus = create<StatusState>((set) => ({
+	statuses: statusData as IStatus[],
+	deleteStatus: (deleteId: number) =>
+		set((state) => ({
+			statuses: state.statuses.filter((state) => state.id !== deleteId),
+		})),
+	updateStatus: (statusId: number, updatedStatus: string) =>
+		set((state) => ({
+			statuses: state.statuses.map((status) =>
+				status.id === statusId ? { ...status, status: updatedStatus } : status,
+			),
+		})),
+}));
+
+export { useTaskStore, useGroupStore, useStatus };
