@@ -18,7 +18,7 @@ interface ColumnProps {
 
 function Column({ statusData, groupedTasks, groups, isDragging }: ColumnProps) {
 	const taskIds = useMemo(
-		() => (groupedTasks[statusData.status] || []).map((task) => task.id),
+		() => (groupedTasks[statusData.id] || []).map((task) => task.id),
 		[groupedTasks],
 	);
 
@@ -57,7 +57,7 @@ function Column({ statusData, groupedTasks, groups, isDragging }: ColumnProps) {
 			</div>
 
 			<SortableContext items={taskIds}>
-				{(groupedTasks[statusData.status] || []).map((task) => (
+				{(groupedTasks[statusData.id] || []).map((task) => (
 					<SortableCard
 						key={task.id}
 						task={task}

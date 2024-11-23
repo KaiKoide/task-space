@@ -27,10 +27,10 @@ function Board() {
 	const [activeTask, setActiveTask] = useState<ITask | null>(null);
 
 	const groupedTasks = tasks.reduce((acc: Record<string, ITask[]>, task) => {
-		if (!acc[task.status]) {
-			acc[task.status] = [];
+		if (!acc[task.status_id]) {
+			acc[task.status_id] = [];
 		}
-		acc[task.status].push(task);
+		acc[task.status_id].push(task);
 		return acc;
 	}, {});
 
@@ -113,7 +113,7 @@ function Board() {
 				const updatedTasks = [...tasks];
 				updatedTasks[activeIndex] = {
 					...updatedTasks[activeIndex],
-					status: tasks[overIndex].status,
+					status_id: tasks[overIndex].status_id,
 				};
 
 				return arrayMove(updatedTasks, activeIndex, overIndex);
@@ -131,7 +131,7 @@ function Board() {
 				const updatedTasks = [...tasks];
 				updatedTasks[activeIndex] = {
 					...updatedTasks[activeIndex],
-					status: over.data.current?.statusData.status,
+					status_id: over.data.current?.statusData.status,
 				};
 
 				return arrayMove(updatedTasks, activeIndex, activeIndex);

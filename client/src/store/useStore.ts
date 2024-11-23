@@ -72,11 +72,11 @@ const useStatusStore = create<StatusState>((set) => ({
 			statuses:
 				typeof updater === "function" ? updater(state.statuses) : updater,
 		})),
-	deleteStatus: (deleteId: number) =>
+	deleteStatus: (deleteId: string) =>
 		set((state) => ({
 			statuses: state.statuses.filter((state) => state.id !== deleteId),
 		})),
-	updateStatus: (statusId: number, updatedStatus: string) =>
+	updateStatus: (statusId: string, updatedStatus: string) =>
 		set((state) => ({
 			statuses: state.statuses.map((status) =>
 				status.id === statusId ? { ...status, status: updatedStatus } : status,

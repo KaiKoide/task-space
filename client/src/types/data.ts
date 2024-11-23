@@ -28,7 +28,7 @@ export interface ITask {
 	description: string;
 	created_at: string;
 	due_date: string;
-	status: "todo" | "in_progress" | "done";
+	status_id: string;
 	group_id: string | undefined;
 	created_by: string;
 }
