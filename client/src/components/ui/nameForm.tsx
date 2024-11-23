@@ -13,12 +13,12 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import type { IGroup } from "@/types/data";
-import { useGroupStore } from "@/store/useStore";
+import type { IGroup, IStatus } from "@/types/data";
+import { useGroupStore, useStatusStore } from "@/store/useStore";
 
 interface NameFormProps {
 	onSave: () => void;
-	data: IGroup;
+	data: IGroup | IStatus;
 }
 
 const formSchema = z.object({
@@ -27,16 +27,21 @@ const formSchema = z.object({
 
 function NameForm({ onSave, data }: NameFormProps) {
 	const { updateGroup } = useGroupStore();
+	const { updateStatus } = useStatusStore();
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			name: data.name || "",
+			name: "name" in data ? data.name : data.status || "",
 		},
 	});
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
-		updateGroup(data.id, values.name);
+		if ("name" in data) {
+			updateGroup(data.id, values.name);
+		} else {
+			updateStatus(data.id, values.name);
+		}
 		onSave();
 	}
 

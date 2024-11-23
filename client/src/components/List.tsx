@@ -27,13 +27,13 @@ import {
 } from "@/components/ui/table";
 
 import { cn } from "@/lib/utils";
-import statusData from "@/mock/statusData.json";
-import { useTaskStore, useGroupStore } from "@/store/useStore";
+import { useTaskStore, useGroupStore, useStatusStore } from "@/store/useStore";
 import type { ITask } from "@/types/data";
 
 function List() {
 	const { tasks, updateTask } = useTaskStore();
 	const { groups } = useGroupStore();
+	const { statuses } = useStatusStore();
 	const [openState, setOpenState] = useState<{ [key: string]: boolean }>({});
 	const [value, setValue] = useState<{ [key: string]: string }>({});
 
@@ -114,7 +114,7 @@ function List() {
 												<CommandList>
 													<CommandEmpty>Add new status</CommandEmpty>
 													<CommandGroup>
-														{statusData.map((status) => (
+														{statuses.map((status) => (
 															<CommandItem
 																className="capitalize"
 																key={status.id}

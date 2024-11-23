@@ -5,14 +5,14 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 
-import type { IGroup } from "@/types/data";
+import type { IGroup, IStatus } from "@/types/data";
 import NameForm from "./nameForm";
 import { Rat } from "lucide-react";
 
 interface NameDialogProps {
 	open: boolean;
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-	data: IGroup;
+	data: IGroup | IStatus;
 }
 
 function NameDialog({ open, setOpen, data }: NameDialogProps) {

@@ -53,7 +53,7 @@ function Column({ statusData, groupedTasks, groups, isDragging }: ColumnProps) {
 				{statusData.status.replace("_", " ")}
 			</Badge>
 			<div className="absolute m-3 top-1 right-2 cursor-pointer">
-				<PopoverMenu type={"column"} />
+				<PopoverMenu type={"column"} data={statusData} />
 			</div>
 
 			<SortableContext items={taskIds}>

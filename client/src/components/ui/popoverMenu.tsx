@@ -20,28 +20,27 @@ import {
 } from "@/components/ui/popover";
 import TaskDialog from "@/components/ui/taskDialog";
 
-import { useTaskStore, useGroupStore } from "@/store/useStore";
-import type { IGroup, ITask } from "@/types/data";
+import { useTaskStore, useGroupStore, useStatusStore } from "@/store/useStore";
+import type { IGroup, IStatus, ITask } from "@/types/data";
 
 interface PopoverMenuProps {
 	type: "task" | "column" | "list";
-	data: ITask | IGroup;
+	data: ITask | IGroup | IStatus;
 	children?: ReactNode;
 }
 
 function PopoverMenu({ type, data, children }: PopoverMenuProps) {
 	const { deleteTask, setTasks } = useTaskStore();
 	const { deleteGroup } = useGroupStore();
+	const { deleteStatus } = useStatusStore();
 	const [open, setOpen] = useState(false);
-	const [isEditGroupName, setIsEditGroupName] = useState(false);
+	const [isEditName, setIsEditName] = useState(false);
 
 	function handleClickOption(option: string) {
 		if (type === "task") {
 			switch (option) {
 				case "delete":
-					if (data) {
-						deleteTask(data.id);
-					}
+					deleteTask(data.id);
 					break;
 				case "edit":
 					setOpen(true);
@@ -50,15 +49,25 @@ function PopoverMenu({ type, data, children }: PopoverMenuProps) {
 		} else if (type === "list") {
 			switch (option) {
 				case "delete":
-					if (data) {
-						deleteGroup(data.id);
-						setTasks((prevTasks) =>
-							prevTasks.filter((task) => task.group_id !== data.id),
-						);
-					}
+					deleteGroup(data.id);
+					setTasks((prevTasks) =>
+						prevTasks.filter((task) => task.group_id !== data.id),
+					);
 					break;
 				case "edit":
-					setIsEditGroupName(true);
+					setIsEditName(true);
+					break;
+			}
+		} else if (type === "column") {
+			switch (option) {
+				case "delete":
+					// deleteStatus(data.id);
+					// setTasks(prevTasks => {
+					// 	prevTasks.filter(task => task.)
+					// })
+					break;
+				case "edit":
+					setIsEditName(true);
 					break;
 			}
 		}
@@ -124,11 +133,7 @@ function PopoverMenu({ type, data, children }: PopoverMenuProps) {
 				isEdit={true}
 				task={type === "task" && data && "title" in data ? data : undefined}
 			/>
-			<NameDialog
-				open={isEditGroupName}
-				setOpen={setIsEditGroupName}
-				data={data as IGroup}
-			/>
+			<NameDialog open={isEditName} setOpen={setIsEditName} data={data} />
 		</Popover>
 	);
 }
