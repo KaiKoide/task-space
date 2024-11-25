@@ -61,10 +61,10 @@ function PopoverMenu({ type, data, children }: PopoverMenuProps) {
 		} else if (type === "column") {
 			switch (option) {
 				case "delete":
-					// deleteStatus(data.id);
-					// setTasks(prevTasks => {
-					// 	prevTasks.filter(task => task.)
-					// })
+					deleteStatus(data.id);
+					setTasks((prevTasks) =>
+						prevTasks.filter((task) => task.status_id !== data.id),
+					);
 					break;
 				case "edit":
 					setIsEditName(true);
