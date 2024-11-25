@@ -38,14 +38,11 @@ function Column({ statusData, groupedTasks, groups, isDragging }: ColumnProps) {
 		<div
 			ref={setNodeRef}
 			style={style}
-			className="backdrop-blur-sm bg-white/50 relative p-3 rounded-md w-80"
+			className="backdrop-blur-sm bg-white/50 relative p-3 rounded-md w-80 min-h-60"
 		>
 			<Badge
 				className={cn(
-					"capitalize mb-3 text-lg rounded-lg border border-custom-default",
-					statusData.status === "todo" && "bg-custom-badge-label-100",
-					statusData.status === "in_progress" && "bg-custom-badge-label-200",
-					statusData.status === "done" && "bg-custom-badge-label-300",
+					"capitalize mb-3 text-lg rounded-lg border border-custom-default bg-custom-badge-label-200",
 				)}
 				{...attributes}
 				{...listeners}
