@@ -131,7 +131,7 @@ function Board() {
 				const updatedTasks = [...tasks];
 				updatedTasks[activeIndex] = {
 					...updatedTasks[activeIndex],
-					status_id: over.data.current?.statusData.status,
+					status_id: over.data.current?.statusData.id,
 				};
 
 				return arrayMove(updatedTasks, activeIndex, activeIndex);
