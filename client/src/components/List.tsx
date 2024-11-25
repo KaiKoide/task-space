@@ -50,10 +50,17 @@ function List() {
 		setOpenState((prev) => ({ ...prev, [taskId]: isOpen }));
 	}
 
-	function handleStatusSelect(taskId: string, newValue: ITask["status"]) {
-		setValue((prev) => ({ ...prev, [taskId]: newValue }));
-		setOpenState((prev) => ({ ...prev, [taskId]: false }));
-		updateTask(taskId, { status: newValue });
+	function handleStatusSelect(taskId: string, newValueId: string) {
+		const status = statuses.find((status) => status.id === newValueId)?.status;
+
+		if (status) {
+			setValue((prev) => ({
+				...prev,
+				[taskId]: status,
+			}));
+			setOpenState((prev) => ({ ...prev, [taskId]: false }));
+			updateTask(taskId, { status_id: newValueId });
+		}
 	}
 
 	return (
@@ -104,8 +111,10 @@ function List() {
 												className="w-30 justify-between capitalize"
 											>
 												{value[task.id]
-													? value[task.id].replace("_", " ")
-													: task.status.replace("_", " ")}
+													? value[task.id]
+													: statuses.find(
+															(status) => status.id === task.status_id,
+														)?.status}
 											</Button>
 										</PopoverTrigger>
 										<PopoverContent className="w-[200px] p-0">
@@ -120,13 +129,10 @@ function List() {
 																key={status.id}
 																value={status.status}
 																onSelect={() =>
-																	handleStatusSelect(
-																		task.id,
-																		status.status as ITask["status"],
-																	)
+																	handleStatusSelect(task.id, status.id)
 																}
 															>
-																{status.status.replace("_", " ")}
+																{status.status}
 																<Check
 																	className={cn(
 																		"ml-auto",
