@@ -38,7 +38,7 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 
-import { useTaskStore, useGroupStore } from "@/store/useStore";
+import { useTaskStore, useGroupStore, useStatusStore } from "@/store/useStore";
 import { cn } from "@/lib/utils";
 import type { ITask } from "@/types/data";
 
@@ -64,6 +64,7 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 	const [newGroupName, setNewGroupName] = useState("");
 	const { addTask, updateTask } = useTaskStore();
 	const { groups, addGroup } = useGroupStore();
+	const { statuses } = useStatusStore();
 
 	const groupName = groups.find((group) => group.id === task?.group_id)?.name;
 
@@ -87,7 +88,9 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 				: task?.due_date || new Date().toISOString(),
 			group_id: groups.find((group) => group.name === values.group)?.id,
 			created_at: task?.created_at || new Date().toISOString(),
-			status: task?.status || ("todo" as const),
+			status_id:
+				task?.status_id ||
+				(statuses.find((status) => status.status === "todo")?.id as string),
 			created_by: task?.created_by || "a1b2c3d4-5678-90ab-cdef-1234567890ab",
 		};
 		if (task) {
