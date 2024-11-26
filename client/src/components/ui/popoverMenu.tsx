@@ -136,7 +136,12 @@ function PopoverMenu({ type, data, children }: PopoverMenuProps) {
 			{data &&
 				typeof data === "object" &&
 				("status" in data || "name" in data) && (
-					<NameDialog open={isEditName} setOpen={setIsEditName} data={data} />
+					<NameDialog
+						open={isEditName}
+						setOpen={setIsEditName}
+						data={data}
+						isEdit={true}
+					/>
 				)}
 		</Popover>
 	);

@@ -10,11 +10,14 @@ import {
 	DragOverlay,
 } from "@dnd-kit/core";
 import { SortableContext, arrayMove } from "@dnd-kit/sortable";
+import { Plus } from "lucide-react";
 import { useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 
-import Column from "./ui/column";
-import SortableCard from "./ui/sortableCard";
+import { Button } from "@/components/ui/button";
+import Column from "@/components/ui/column";
+import NameDialog from "@/components/ui/nameDialog";
+import SortableCard from "@/components/ui/sortableCard";
 
 import { useTaskStore, useGroupStore, useStatusStore } from "@/store/useStore";
 import type { ITask, IStatus } from "@/types/data";
@@ -25,6 +28,7 @@ function Board() {
 	const { groups } = useGroupStore();
 	const [activeColumn, setActiveColumn] = useState<IStatus | null>(null);
 	const [activeTask, setActiveTask] = useState<ITask | null>(null);
+	const [open, setOpen] = useState(false);
 
 	const groupedTasks = tasks.reduce((acc: Record<string, ITask[]>, task) => {
 		if (!acc[task.status_id]) {
@@ -159,6 +163,15 @@ function Board() {
 						/>
 					))}
 				</SortableContext>
+				<Button
+					onClick={() => setOpen(true)}
+					variant="outline"
+					className="rounded-md"
+				>
+					<Plus />
+					New Statue
+				</Button>
+				<NameDialog open={open} setOpen={setOpen} type={"status"} />
 			</div>
 			{createPortal(
 				<DragOverlay>

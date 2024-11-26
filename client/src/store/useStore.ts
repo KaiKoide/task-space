@@ -25,6 +25,7 @@ interface StatusState {
 	setStatus: (
 		updater: ((statuses: IStatus[]) => IStatus[]) | IStatus[],
 	) => void;
+	addStatus: (newStatus: IStatus) => void;
 	deleteStatus: (statusId: string) => void;
 	updateStatus: (statusId: string, updatedStatus: string) => void;
 }
@@ -71,6 +72,10 @@ const useStatusStore = create<StatusState>((set) => ({
 		set((state) => ({
 			statuses:
 				typeof updater === "function" ? updater(state.statuses) : updater,
+		})),
+	addStatus: (newStatus: IStatus) =>
+		set((state) => ({
+			statuses: [...state.statuses, newStatus],
 		})),
 	deleteStatus: (deleteId: string) =>
 		set((state) => ({

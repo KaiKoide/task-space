@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Cookie } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -18,29 +19,41 @@ import { useGroupStore, useStatusStore } from "@/store/useStore";
 
 interface NameFormProps {
 	onSave: () => void;
-	data: IGroup | IStatus;
+	data?: IGroup | IStatus;
+	type?: "status" | "group";
+	isEdit?: boolean;
 }
 
 const formSchema = z.object({
 	name: z.string().min(2),
 });
 
-function NameForm({ onSave, data }: NameFormProps) {
+function NameForm({ onSave, data, type, isEdit = false }: NameFormProps) {
 	const { updateGroup } = useGroupStore();
-	const { updateStatus } = useStatusStore();
+	const { updateStatus, addStatus } = useStatusStore();
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			name: "name" in data ? data.name : data.status || "",
+			name: data ? ("name" in data ? data.name : data.status) : "",
 		},
 	});
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
-		if ("name" in data) {
-			updateGroup(data.id, values.name);
+		if (isEdit && data) {
+			if ("name" in data) {
+				updateGroup(data.id, values.name);
+			} else {
+				updateStatus(data.id, values.name);
+			}
 		} else {
-			updateStatus(data.id, values.name);
+			if (type === "status") {
+				const newStatus = {
+					id: uuidv4().toString(),
+					status: values.name,
+				};
+				addStatus(newStatus);
+			}
 		}
 		onSave();
 	}

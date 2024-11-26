@@ -12,10 +12,18 @@ import { Rat } from "lucide-react";
 interface NameDialogProps {
 	open: boolean;
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-	data: IGroup | IStatus;
+	data?: IGroup | IStatus;
+	type?: "status" | "group";
+	isEdit?: boolean;
 }
 
-function NameDialog({ open, setOpen, data }: NameDialogProps) {
+function NameDialog({
+	open,
+	setOpen,
+	data,
+	type,
+	isEdit = false,
+}: NameDialogProps) {
 	function handleCloseDialog() {
 		setOpen(false);
 	}
@@ -26,10 +34,15 @@ function NameDialog({ open, setOpen, data }: NameDialogProps) {
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
 						<Rat />
-						&lt; Edit Name
+						{isEdit ? "< Edit Name" : "< Create"}
 					</DialogTitle>
 				</DialogHeader>
-				<NameForm onSave={handleCloseDialog} data={data} />
+				<NameForm
+					onSave={handleCloseDialog}
+					data={data}
+					isEdit={isEdit}
+					type={type}
+				/>
 			</DialogContent>
 		</Dialog>
 	);
