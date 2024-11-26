@@ -26,7 +26,7 @@ function NameDialog({ open, setOpen, data }: NameDialogProps) {
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
 						<Rat />
-						Edit Name
+						&lt; Edit Name
 					</DialogTitle>
 				</DialogHeader>
 				<NameForm onSave={handleCloseDialog} data={data} />

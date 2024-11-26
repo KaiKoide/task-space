@@ -26,7 +26,7 @@ function TaskDialog({ open, setOpen, isEdit = false, task }: TaskDialogProps) {
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
 						<PiggyBank />
-						{isEdit ? "Edit task" : "Add new task"}
+						{isEdit ? "< Edit task" : "< Add new task"}
 					</DialogTitle>
 				</DialogHeader>
 				<TaskForm onSave={handleCloseDialog} task={task} />

@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FishSymbol } from "lucide-react";
+import { Cookie } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -64,7 +64,7 @@ function NameForm({ onSave, data }: NameFormProps) {
 				<div className="flex justify-end">
 					<Button type="submit" className="flex gap-1">
 						Update Name
-						<FishSymbol />
+						<Cookie />
 					</Button>
 				</div>
 			</form>
