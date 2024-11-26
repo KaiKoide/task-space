@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Check, Plus } from "lucide-react";
+import { Check, CirclePlus, Plus } from "lucide-react";
+import { v4 as uuidv4 } from "uuid";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -34,10 +35,11 @@ import type { ITask } from "@/types/data";
 function List() {
 	const { tasks, updateTask } = useTaskStore();
 	const { groups } = useGroupStore();
-	const { statuses } = useStatusStore();
+	const { statuses, addStatus } = useStatusStore();
 	const [openState, setOpenState] = useState<{ [key: string]: boolean }>({});
 	const [value, setValue] = useState<{ [key: string]: string }>({});
 	const [open, setOpen] = useState(false);
+	const [newStatusName, setNewStatusName] = useState("");
 
 	const groupedTasks = tasks.reduce((acc: Record<string, ITask[]>, task) => {
 		const groupId = task.group_id || "no_group";
@@ -63,6 +65,18 @@ function List() {
 			setOpenState((prev) => ({ ...prev, [taskId]: false }));
 			updateTask(taskId, { status_id: newValueId });
 		}
+	}
+
+	function handleChange(e: React.FormEvent<HTMLInputElement>) {
+		setNewStatusName(e.currentTarget.value);
+	}
+
+	function handleAddStatus() {
+		const newStatus = {
+			id: uuidv4().toString(),
+			status: newStatusName,
+		};
+		addStatus(newStatus);
 	}
 
 	return (
@@ -121,9 +135,20 @@ function List() {
 										</PopoverTrigger>
 										<PopoverContent className="w-[200px] p-0">
 											<Command>
-												<CommandInput placeholder="Search status..." />
+												<CommandInput
+													placeholder="Search status..."
+													onInput={handleChange}
+												/>
 												<CommandList>
-													<CommandEmpty>Add new status</CommandEmpty>
+													<CommandEmpty onClick={handleAddStatus}>
+														<div className="flex items-center justify-center gap-1 text-custom-default">
+															<CirclePlus
+																strokeWidth={1.5}
+																className="font-bold"
+															/>
+															Add new status
+														</div>
+													</CommandEmpty>
 													<CommandGroup>
 														{statuses.map((status) => (
 															<CommandItem
