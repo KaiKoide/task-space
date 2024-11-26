@@ -29,7 +29,7 @@ const formSchema = z.object({
 });
 
 function NameForm({ onSave, data, type, isEdit = false }: NameFormProps) {
-	const { updateGroup } = useGroupStore();
+	const { updateGroup, addGroup } = useGroupStore();
 	const { updateStatus, addStatus } = useStatusStore();
 
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -53,6 +53,13 @@ function NameForm({ onSave, data, type, isEdit = false }: NameFormProps) {
 					status: values.name,
 				};
 				addStatus(newStatus);
+			} else {
+				const newGroup = {
+					id: uuidv4().toString(),
+					name: values.name,
+					created_at: new Date().toISOString(),
+				};
+				addGroup(newGroup);
 			}
 		}
 		onSave();
@@ -76,7 +83,7 @@ function NameForm({ onSave, data, type, isEdit = false }: NameFormProps) {
 				/>
 				<div className="flex justify-end">
 					<Button type="submit" className="flex gap-1">
-						Update Name
+						{isEdit ? "Update Name" : "Create"}
 						<Cookie />
 					</Button>
 				</div>

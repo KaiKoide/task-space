@@ -10,6 +10,7 @@ import {
 	CommandItem,
 	CommandList,
 } from "@/components/ui/command";
+import NameDialog from "@/components/ui/nameDialog";
 import {
 	Popover,
 	PopoverContent,
@@ -36,6 +37,7 @@ function List() {
 	const { statuses } = useStatusStore();
 	const [openState, setOpenState] = useState<{ [key: string]: boolean }>({});
 	const [value, setValue] = useState<{ [key: string]: string }>({});
+	const [open, setOpen] = useState(false);
 
 	const groupedTasks = tasks.reduce((acc: Record<string, ITask[]>, task) => {
 		const groupId = task.group_id || "no_group";
@@ -166,10 +168,15 @@ function List() {
 						colSpan={4}
 						className="cursor-pointer hover:bg-slate-200/30"
 					>
-						<div className="flex items-center gap-2">
+						{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+						<div
+							className="flex items-center gap-2"
+							onClick={() => setOpen(true)}
+						>
 							<Plus />
 							New group
 						</div>
+						<NameDialog open={open} setOpen={setOpen} type={"group"} />
 					</TableCell>
 				</TableRow>
 			</TableFooter>
