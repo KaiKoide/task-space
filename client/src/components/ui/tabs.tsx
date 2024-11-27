@@ -5,6 +5,7 @@ import "react-tabs/style/react-tabs.css";
 
 import Board from "@/components/Board";
 import { Button } from "@/components/ui/button";
+import Calendar from "@/components/Calendar";
 import TaskDialog from "@/components/ui/taskDialog";
 import List from "../List";
 
@@ -50,7 +51,7 @@ function TabsComponent() {
 				<List />
 			</TabPanel>
 			<TabPanel>
-				<h2 className="text-lg font-semibold">Content for Tab 3</h2>
+				<Calendar />
 			</TabPanel>
 		</Tabs>
 	);
