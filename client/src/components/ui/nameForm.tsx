@@ -25,7 +25,9 @@ interface NameFormProps {
 }
 
 const formSchema = z.object({
-	name: z.string().min(2),
+	name: z.string().min(2, {
+		message: "Name must be at least 2 characters.",
+	}),
 });
 
 function NameForm({ onSave, data, type, isEdit = false }: NameFormProps) {
@@ -82,8 +84,8 @@ function NameForm({ onSave, data, type, isEdit = false }: NameFormProps) {
 					)}
 				/>
 				<div className="flex justify-end">
-					<Button type="submit" className="flex gap-1">
-						{isEdit ? "Update Name" : "Create"}
+					<Button type="submit" className="flex gap-1 capitalize">
+						{isEdit ? "Update Name" : `Create ${type}`}
 						<Cookie />
 					</Button>
 				</div>

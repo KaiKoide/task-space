@@ -49,14 +49,14 @@ interface TaskFormProps {
 
 const formSchema = z.object({
 	title: z.string().min(2, {
-		message: "Username must be at least 2 characters.",
+		message: "Title must be at least 2 characters.",
 	}),
 	description: z.string(),
 	group: z.string({
 		required_error: "Please select a group.",
 	}),
 	dueDate: z.date({
-		required_error: "A due date is required.",
+		required_error: "Please select a due date.",
 	}),
 });
 
@@ -104,14 +104,17 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 	function handleAddGroup() {
 		const newGroup = {
 			id: uuidv4().toString(),
-			name: newGroupName,
+			name: newGroupName.trim(),
 			created_at: new Date().toISOString(),
 		};
 		addGroup(newGroup);
+		setNewGroupName("");
 	}
 
-	function handleChange(e: React.FormEvent<HTMLInputElement>) {
-		setNewGroupName(e.currentTarget.value);
+	function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+		if (e.key === "Enter") {
+			handleAddGroup();
+		}
 	}
 
 	return (
@@ -163,7 +166,8 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 									<Command>
 										<CommandInput
 											placeholder="Search group..."
-											onInput={handleChange}
+											onInput={(e) => setNewGroupName(e.currentTarget.value)}
+											onKeyDown={(e) => handleKeyDown(e)}
 										/>
 										<CommandList>
 											<CommandEmpty onClick={handleAddGroup}>

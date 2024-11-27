@@ -32,9 +32,9 @@ function NameDialog({
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogContent className="sm:max-w-[425px]">
 				<DialogHeader>
-					<DialogTitle className="flex items-center gap-2">
+					<DialogTitle className="flex items-center gap-2 capitalize">
 						<Rat />
-						{isEdit ? "< Edit Name" : "< Create"}
+						{isEdit ? "< Edit Name" : `< Create ${type}`}
 					</DialogTitle>
 				</DialogHeader>
 				<NameForm

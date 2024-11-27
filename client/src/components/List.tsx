@@ -67,16 +67,17 @@ function List() {
 		}
 	}
 
-	function handleChange(e: React.FormEvent<HTMLInputElement>) {
-		setNewStatusName(e.currentTarget.value);
-	}
-
 	function handleAddStatus() {
 		const newStatus = {
 			id: uuidv4().toString(),
-			status: newStatusName,
+			status: newStatusName.trim(),
 		};
 		addStatus(newStatus);
+		setNewStatusName("");
+	}
+
+	function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+		if (e.key === "Enter") handleAddStatus();
 	}
 
 	return (
@@ -137,7 +138,10 @@ function List() {
 											<Command>
 												<CommandInput
 													placeholder="Search status..."
-													onInput={handleChange}
+													onInput={(e) =>
+														setNewStatusName(e.currentTarget.value)
+													}
+													onKeyDown={handleKeyDown}
 												/>
 												<CommandList>
 													<CommandEmpty onClick={handleAddStatus}>
