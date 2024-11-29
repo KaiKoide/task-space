@@ -41,9 +41,8 @@ function Column({ statusData, groupedTasks, groups, isDragging }: ColumnProps) {
 			className="backdrop-blur-sm bg-white/50 relative p-3 rounded-md w-80 min-h-60"
 		>
 			<Badge
-				className={cn(
-					"capitalize mb-3 text-lg rounded-lg border border-custom-default bg-custom-badge-label-200",
-				)}
+				variant="secondary"
+				className={cn("capitalize mb-3 text-lg rounded-lg")}
 				{...attributes}
 				{...listeners}
 			>
