@@ -2,10 +2,12 @@
 	"name": "server",
 	"version": "1.0.0",
 	"main": "index.js",
-	"type": "module",
+	"type": "commonjs",
 	"scripts": {
-		"start": "nodemon --watch ./ --ext ts --exec \"node --loader ts-node/esm index.ts\"",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"start": "ts-node src/index.ts",
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"build": "tsc",
+		"serve": "node dist/index.js"
 	},
 	"author": "",
 	"license": "ISC",
@@ -13,7 +15,6 @@
 	"dependencies": {
 		"express": "^4.21.1",
 		"express-graphql": "^0.12.0",
-		"graphql": "^15.8.0",
 		"graphql-http": "^1.22.3"
 	},
 	"devDependencies": {
