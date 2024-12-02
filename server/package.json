@@ -17,9 +17,13 @@
 		"graphql-http": "^1.22.3"
 	},
 	"devDependencies": {
+		"@types/cors": "^2.8.17",
 		"@types/express": "^5.0.0",
 		"@types/node": "^22.10.1",
+		"body-parser": "^1.20.3",
+		"cors": "^2.8.5",
 		"nodemon": "^3.1.7",
+		"prisma": "^6.0.0",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.7.2"
 	}
