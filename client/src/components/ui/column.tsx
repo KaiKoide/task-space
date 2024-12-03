@@ -38,7 +38,7 @@ function Column({ statusData, groupedTasks, groups, isDragging }: ColumnProps) {
 		<div
 			ref={setNodeRef}
 			style={style}
-			className="backdrop-blur-sm bg-white/50 relative p-3 rounded-md w-80 min-h-60"
+			className="backdrop-blur-sm bg-white/50 relative p-3 rounded-md min-w-80 min-h-60"
 		>
 			<Badge
 				variant="secondary"
