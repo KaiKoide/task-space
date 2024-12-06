@@ -1,13 +1,27 @@
-import { gql } from "apollo-server-express";
+const books = [
+	{
+		title: "The wizard of Oz",
+		author: "L. Frank Baum",
+	},
+	{
+		title: "The wizard of Oz",
+		author: "Gregory Maguire",
+	},
+];
 
-export const typeDefs = gql`
-  type Query {
-    hello: String
-  }
+export const typeDefs = `#graphql
+	type Book {
+		title: String!
+		author: String!
+	}
+
+	type Query {
+		books: [Book!]
+	}
 `;
 
 export const resolvers = {
 	Query: {
-		hello: () => "Hello, GraphQL with Apollo!",
+		books: () => books,
 	},
 };
