@@ -12,3 +12,43 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Group {
+  id         String   @id @default(uuid())
+  createdAt  DateTime @default(now())
+  name       String
+
+  task Task[]
+}
+
+model Status {
+  id      String   @id @default(uuid())
+  status  String
+
+  task Task[]
+}
+
+model User {
+  id         String   @id @default(uuid())
+  createdAt  DateTime @default(now())
+  name       String
+  email      String
+  password   String
+
+  task Task[]
+}
+
+model Task {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  title       String
+  description String?
+  DueDate     DateTime
+  group  Group  @relation(fields: [groupId], references: [id])
+  groupId     String
+  user   User    @relation(fields: [createdBy], references: [id])
+  createdBy   String
+  status Status  @relation(fields: [statusId], references: [id])
+  statusId    String
+
+}
