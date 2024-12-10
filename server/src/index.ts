@@ -1,23 +1,27 @@
 import express, { type Request, type Response } from "express";
-import { PrismaClient } from "@prisma/client";
+
+import { groupsRoute } from "./routes/group.route.js";
 
 const app = express();
 const port = 3000;
-const prisma = new PrismaClient();
 
-// app.get("/", (req: Request, res: Response) => {
-// 	res.send("Hello World!");
-// });
+const base_path = "v1";
+const api_prefix = "api";
 
-app.get("/", async (req: Request, res: Response) => {
-	try {
-		const groups = await prisma.group.findMany();
-		res.status(200).json(groups);
-		res.send(groups);
-	} catch (error) {
-		console.error("Error fetching groups:", error);
-		res.status(500).json({ error: "Failed to fetch groups" });
-	}
+const defaultRoutes = [
+	{
+		path: `/${base_path}/groups`,
+		route: groupsRoute,
+	},
+];
+
+app.get("/", (req: Request, res: Response) => {
+	res.send("Hello World!");
 });
+
+for (const route of defaultRoutes) {
+	console.log(`Route: /${api_prefix}${route.path}`);
+	app.use(`/${api_prefix}${route.path}`, route.route);
+}
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
