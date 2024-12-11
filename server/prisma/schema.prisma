@@ -24,16 +24,16 @@ model Status {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model Task {
-  id          String   @id(map: "task_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt   DateTime @default(now()) @db.Timestamptz(6)
-  title       String   @db.VarChar
+  title       String
   description String?
-  dueDate     DateTime @db.Date
-  groupId     String?  @db.Uuid
+  groupId     String   @db.Uuid
   createdBy   String   @db.Uuid
   statusId    String   @db.Uuid
+  dueDate     DateTime @db.Timestamptz(6)
   User        User     @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  Group       Group?   @relation(fields: [groupId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Group       Group    @relation(fields: [groupId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Status      Status   @relation(fields: [statusId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 

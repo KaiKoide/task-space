@@ -3,6 +3,7 @@ import express, { type Request, type Response } from "express";
 import { groupsRoute } from "./routes/group.route.js";
 import { statusRoute } from "./routes/status.route.js";
 import { userRoute } from "./routes/user.route.js";
+import { taskRoute } from "./routes/task.route.js";
 
 const app = express();
 const port = 3000;
@@ -22,6 +23,10 @@ const defaultRoutes = [
 	{
 		path: `/${base_path}/users`,
 		route: userRoute,
+	},
+	{
+		path: `/${base_path}/tasks`,
+		route: taskRoute,
 	},
 ];
 
