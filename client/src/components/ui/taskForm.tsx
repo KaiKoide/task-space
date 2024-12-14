@@ -88,15 +88,15 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 			id: task?.id || uuidv4().toString(),
 			title: values.title,
 			description: values.description,
-			due_date: values.dueDate
+			dueDate: values.dueDate
 				? format(values.dueDate, "yyyy-MM-dd")
 				: task?.dueDate || new Date().toISOString(),
-			group_id: groups.find((group) => group.name === values.group)?.id,
-			created_at: task?.createdAt || new Date().toISOString(),
-			status_id:
+			groupId: groups.find((group) => group.name === values.group)?.id,
+			createdAt: task?.createdAt || new Date().toISOString(),
+			statusId:
 				task?.statusId ||
 				(statuses.find((status) => status.status === "todo")?.id as string),
-			created_by: task?.createdBy || "a1b2c3d4-5678-90ab-cdef-1234567890ab",
+			createdBy: task?.createdBy || "a1b2c3d4-5678-90ab-cdef-1234567890ab",
 		};
 		if (task) {
 			updateTask(task.id, newTask);
@@ -110,7 +110,7 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 		const newGroup = {
 			id: uuidv4().toString(),
 			name: newGroupName.trim(),
-			created_at: new Date().toISOString(),
+			createdAt: new Date().toISOString(),
 		};
 		addGroup(newGroup);
 		setNewGroupName("");

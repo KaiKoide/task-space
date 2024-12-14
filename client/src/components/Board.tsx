@@ -36,16 +36,6 @@ function Board() {
 		fetchGroups();
 	}, []);
 
-	console.log(
-		"🐭🐭🐭Board🐭🐭🐭",
-		"tasks:",
-		tasks,
-		"groups:",
-		groups,
-		"statuses:",
-		statuses,
-	);
-
 	const groupedTasks = tasks.reduce((acc: Record<string, ITask[]>, task) => {
 		if (!acc[task.statusId]) {
 			acc[task.statusId] = [];

@@ -51,7 +51,7 @@ function PopoverMenu({ type, data, children }: PopoverMenuProps) {
 				case "delete":
 					deleteGroup(data.id);
 					setTasks((prevTasks) =>
-						prevTasks.filter((task) => task.group_id !== data.id),
+						prevTasks.filter((task) => task.groupId !== data.id),
 					);
 					break;
 				case "edit":
@@ -63,7 +63,7 @@ function PopoverMenu({ type, data, children }: PopoverMenuProps) {
 				case "delete":
 					deleteStatus(data.id);
 					setTasks((prevTasks) =>
-						prevTasks.filter((task) => task.status_id !== data.id),
+						prevTasks.filter((task) => task.statusId !== data.id),
 					);
 					break;
 				case "edit":

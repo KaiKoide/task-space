@@ -64,7 +64,7 @@ function NameForm({ onSave, data, type, isEdit = false }: NameFormProps) {
 				const newGroup = {
 					id: uuidv4().toString(),
 					name: values.name,
-					created_at: new Date().toISOString(),
+					createdAt: new Date().toISOString(),
 				};
 				addGroup(newGroup);
 			}
