@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { format } from "date-fns";
 import { Check, CirclePlus, Plus } from "lucide-react";
+import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import { Button } from "@/components/ui/button";
@@ -187,7 +188,7 @@ function List() {
 									</Popover>
 								</TableCell>
 								<TableCell className="border-r border-custom-default/30">
-									{task.dueDate}
+									{format(task.dueDate, "yyyy-MM-dd")}
 								</TableCell>
 								<TableCell className="text-right max-w-52">
 									{task.description}
