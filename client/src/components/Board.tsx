@@ -11,7 +11,7 @@ import {
 } from "@dnd-kit/core";
 import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 import { Plus } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { Button } from "@/components/ui/button";
@@ -23,20 +23,38 @@ import { useTaskStore, useGroupStore, useStatusStore } from "@/store/useStore";
 import type { ITask, IStatus } from "@/types/data";
 
 function Board() {
-	const { statuses, setStatus } = useStatusStore();
-	const { tasks, setTasks } = useTaskStore();
-	const { groups } = useGroupStore();
+	const { statuses, setStatus, fetchStatus } = useStatusStore();
+	const { tasks, setTasks, fetchTasks } = useTaskStore();
+	const { groups, fetchGroups } = useGroupStore();
 	const [activeColumn, setActiveColumn] = useState<IStatus | null>(null);
 	const [activeTask, setActiveTask] = useState<ITask | null>(null);
 	const [open, setOpen] = useState(false);
 
+	useEffect(() => {
+		fetchTasks();
+		fetchStatus();
+		fetchGroups();
+	}, []);
+
+	console.log(
+		"🐭🐭🐭Board🐭🐭🐭",
+		"tasks:",
+		tasks,
+		"groups:",
+		groups,
+		"statuses:",
+		statuses,
+	);
+
 	const groupedTasks = tasks.reduce((acc: Record<string, ITask[]>, task) => {
-		if (!acc[task.status_id]) {
-			acc[task.status_id] = [];
+		if (!acc[task.statusId]) {
+			acc[task.statusId] = [];
 		}
-		acc[task.status_id].push(task);
+		acc[task.statusId].push(task);
 		return acc;
 	}, {});
+
+	console.log("groupedTasks", groupedTasks);
 
 	const groupsObj = groups.reduce((acc: Record<string, string>, group) => {
 		acc[group.id] = group.name;
@@ -117,7 +135,7 @@ function Board() {
 				const updatedTasks = [...tasks];
 				updatedTasks[activeIndex] = {
 					...updatedTasks[activeIndex],
-					status_id: tasks[overIndex].status_id,
+					statusId: tasks[overIndex].statusId,
 				};
 
 				return arrayMove(updatedTasks, activeIndex, overIndex);
@@ -135,7 +153,7 @@ function Board() {
 				const updatedTasks = [...tasks];
 				updatedTasks[activeIndex] = {
 					...updatedTasks[activeIndex],
-					status_id: over.data.current?.statusData.id,
+					statusId: over.data.current?.statusData.id,
 				};
 
 				return arrayMove(updatedTasks, activeIndex, activeIndex);
@@ -187,9 +205,7 @@ function Board() {
 						<SortableCard
 							task={activeTask}
 							groupName={
-								activeTask.group_id
-									? groupsObj[activeTask.group_id]
-									: "No Group"
+								activeTask.groupId ? groupsObj[activeTask.groupId] : "No Group"
 							}
 						/>
 					)}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, CirclePlus, Plus } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 
@@ -33,16 +33,22 @@ import { useTaskStore, useGroupStore, useStatusStore } from "@/store/useStore";
 import type { ITask } from "@/types/data";
 
 function List() {
-	const { tasks, updateTask } = useTaskStore();
-	const { groups } = useGroupStore();
-	const { statuses, addStatus } = useStatusStore();
+	const { tasks, updateTask, fetchTasks } = useTaskStore();
+	const { groups, fetchGroups } = useGroupStore();
+	const { statuses, addStatus, fetchStatus } = useStatusStore();
 	const [openState, setOpenState] = useState<{ [key: string]: boolean }>({});
 	const [value, setValue] = useState<{ [key: string]: string }>({});
 	const [open, setOpen] = useState(false);
 	const [newStatusName, setNewStatusName] = useState("");
 
+	useEffect(() => {
+		fetchStatus();
+		fetchTasks();
+		fetchGroups();
+	}, []);
+
 	const groupedTasks = tasks.reduce((acc: Record<string, ITask[]>, task) => {
-		const groupId = task.group_id || "no_group";
+		const groupId = task.groupId || "no_group";
 		if (!acc[groupId]) {
 			acc[groupId] = [];
 		}
@@ -63,7 +69,7 @@ function List() {
 				[taskId]: status,
 			}));
 			setOpenState((prev) => ({ ...prev, [taskId]: false }));
-			updateTask(taskId, { status_id: newValueId });
+			updateTask(taskId, { statusId: newValueId });
 		}
 	}
 
@@ -130,7 +136,7 @@ function List() {
 												{value[task.id]
 													? value[task.id]
 													: statuses.find(
-															(status) => status.id === task.status_id,
+															(status) => status.id === task.statusId,
 														)?.status}
 											</Button>
 										</PopoverTrigger>
@@ -181,7 +187,7 @@ function List() {
 									</Popover>
 								</TableCell>
 								<TableCell className="border-r border-custom-default/30">
-									{task.due_date}
+									{task.dueDate}
 								</TableCell>
 								<TableCell className="text-right max-w-52">
 									{task.description}

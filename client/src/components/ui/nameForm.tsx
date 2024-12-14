@@ -1,8 +1,9 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Cookie } from "lucide-react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -32,7 +33,11 @@ const formSchema = z.object({
 
 function NameForm({ onSave, data, type, isEdit = false }: NameFormProps) {
 	const { updateGroup, addGroup } = useGroupStore();
-	const { updateStatus, addStatus } = useStatusStore();
+	const { updateStatus, addStatus, fetchStatus } = useStatusStore();
+
+	useEffect(() => {
+		fetchStatus();
+	}, []);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),

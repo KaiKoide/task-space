@@ -1,3 +1,4 @@
+import cors from "cors";
 import express, { type Request, type Response } from "express";
 
 import { groupsRoute } from "./routes/group.route.js";
@@ -29,6 +30,8 @@ const defaultRoutes = [
 		route: taskRoute,
 	},
 ];
+
+app.use(cors());
 
 app.get("/", (req: Request, res: Response) => {
 	res.send("Hello World!");

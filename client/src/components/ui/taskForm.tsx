@@ -7,7 +7,7 @@ import {
 	CirclePlus,
 	PawPrint,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
@@ -62,11 +62,16 @@ const formSchema = z.object({
 
 function TaskForm({ onSave, task }: TaskFormProps) {
 	const [newGroupName, setNewGroupName] = useState("");
-	const { addTask, updateTask } = useTaskStore();
+	const { addTask, updateTask, fetchTasks } = useTaskStore();
 	const { groups, addGroup } = useGroupStore();
-	const { statuses } = useStatusStore();
+	const { statuses, fetchStatus } = useStatusStore();
 
-	const groupName = groups.find((group) => group.id === task?.group_id)?.name;
+	useEffect(() => {
+		fetchStatus();
+		fetchTasks();
+	}, []);
+
+	const groupName = groups.find((group) => group.id === task?.groupId)?.name;
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -74,7 +79,7 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 			title: task?.title || "",
 			description: task?.description || "",
 			group: task ? groupName : "",
-			dueDate: task?.due_date ? new Date(task.due_date) : undefined,
+			dueDate: task?.dueDate ? new Date(task.dueDate) : undefined,
 		},
 	});
 
@@ -85,13 +90,13 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 			description: values.description,
 			due_date: values.dueDate
 				? format(values.dueDate, "yyyy-MM-dd")
-				: task?.due_date || new Date().toISOString(),
+				: task?.dueDate || new Date().toISOString(),
 			group_id: groups.find((group) => group.name === values.group)?.id,
-			created_at: task?.created_at || new Date().toISOString(),
+			created_at: task?.createdAt || new Date().toISOString(),
 			status_id:
-				task?.status_id ||
+				task?.statusId ||
 				(statuses.find((status) => status.status === "todo")?.id as string),
-			created_by: task?.created_by || "a1b2c3d4-5678-90ab-cdef-1234567890ab",
+			created_by: task?.createdBy || "a1b2c3d4-5678-90ab-cdef-1234567890ab",
 		};
 		if (task) {
 			updateTask(task.id, newTask);
@@ -148,14 +153,14 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 											role="combobox"
 											className={cn(
 												"w-[200px] justify-between rounded-md px-3 font-normal",
-												!(field.value || task?.group_id) &&
+												!(field.value || task?.groupId) &&
 													"text-muted-foreground",
 											)}
 										>
 											{field.value
 												? groups.find((group) => group.name === field.value)
 														?.name
-												: task?.group_id
+												: task?.groupId
 													? groupName
 													: "Select group"}
 											<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -223,7 +228,7 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 										>
 											{field.value
 												? format(field.value, "yyyy-MM-dd")
-												: task?.due_date || <span>Pick a date</span>}
+												: task?.dueDate || <span>Pick a date</span>}
 											<CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
 										</Button>
 									</FormControl>
