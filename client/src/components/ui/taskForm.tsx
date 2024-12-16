@@ -63,7 +63,7 @@ const formSchema = z.object({
 function TaskForm({ onSave, task }: TaskFormProps) {
 	const [newGroupName, setNewGroupName] = useState("");
 	const { addTask, updateTask, fetchTasks } = useTaskStore();
-	const { groups, addGroup } = useGroupStore();
+	const { groups, addGroupToServer } = useGroupStore();
 	const { statuses, fetchStatus } = useStatusStore();
 
 	useEffect(() => {
@@ -113,22 +113,7 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 			createdAt: new Date().toISOString(),
 		};
 
-		try {
-			const response = await fetch("http://localhost:3000/api/v1/groups", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(newGroup),
-			});
-
-			if (response.ok) {
-				addGroup(newGroup);
-				setNewGroupName("");
-			}
-		} catch (error) {
-			console.error("Error creating the group", error);
-		}
+		await addGroupToServer(newGroup);
 	}
 
 	function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {

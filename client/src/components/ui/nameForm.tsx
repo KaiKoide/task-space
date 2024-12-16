@@ -32,7 +32,7 @@ const formSchema = z.object({
 });
 
 function NameForm({ onSave, data, type, isEdit = false }: NameFormProps) {
-	const { updateGroup, addGroup } = useGroupStore();
+	const { updateGroup, addGroup, addGroupToServer } = useGroupStore();
 	const { updateStatus, addStatus, fetchStatus } = useStatusStore();
 
 	useEffect(() => {
@@ -83,7 +83,7 @@ function NameForm({ onSave, data, type, isEdit = false }: NameFormProps) {
 					name: values.name,
 					createdAt: new Date().toISOString(),
 				};
-				addGroup(newGroup);
+				await addGroupToServer(newGroup);
 			}
 		}
 		onSave();

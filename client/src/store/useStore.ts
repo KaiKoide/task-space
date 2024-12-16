@@ -17,6 +17,7 @@ interface GroupState {
 	deleteGroup: (groupId: string) => void;
 	updateGroup: (groupId: string, updatedGroup: string) => void;
 	fetchGroups: () => void;
+	addGroupToServer: (group: IGroup) => void;
 }
 
 interface StatusState {
@@ -81,6 +82,25 @@ const useGroupStore = create<GroupState>((set) => ({
 			set({ groups: data });
 		} catch (error) {
 			console.error("Failed to fetch groups", error);
+		}
+	},
+	addGroupToServer: async (group: IGroup) => {
+		try {
+			const response = await fetch("http://localhost:3000/api/v1/groups", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(group),
+			});
+
+			if (!response.ok) {
+				throw new Error("Failed to add group");
+			}
+
+			set((state) => ({ groups: [...state.groups, group] }));
+		} catch (error) {
+			console.error("Error adding group to server", error);
 		}
 	},
 }));
