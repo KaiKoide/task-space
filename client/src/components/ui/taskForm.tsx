@@ -106,14 +106,29 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 		onSave();
 	}
 
-	function handleAddGroup() {
+	async function handleAddGroup() {
 		const newGroup = {
 			id: uuidv4().toString(),
 			name: newGroupName.trim(),
 			createdAt: new Date().toISOString(),
 		};
-		addGroup(newGroup);
-		setNewGroupName("");
+
+		try {
+			const response = await fetch("http://localhost:3000/api/v1/groups", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(newGroup),
+			});
+
+			if (response.ok) {
+				addGroup(newGroup);
+				setNewGroupName("");
+			}
+		} catch (error) {
+			console.error("Error creating the group", error);
+		}
 	}
 
 	function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {

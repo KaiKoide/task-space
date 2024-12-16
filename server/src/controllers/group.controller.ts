@@ -8,11 +8,7 @@ export const getGroups = async (req: Request, res: Response) => {
 	try {
 		const groups = await prisma.group.findMany();
 
-		res.status(200).json({
-			message: "Groups fetched successfully",
-			data: groups,
-			count: groups.length,
-		});
+		res.status(200).json(groups);
 	} catch (error) {
 		console.error("Error fetching groups", error);
 

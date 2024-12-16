@@ -44,8 +44,6 @@ function Board() {
 		return acc;
 	}, {});
 
-	console.log("groupedTasks", groupedTasks);
-
 	const groupsObj = groups.reduce((acc: Record<string, string>, group) => {
 		acc[group.id] = group.name;
 		return acc;
