@@ -1,6 +1,5 @@
 import type { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
-import { json } from "body-parser";
 
 const prisma = new PrismaClient();
 
@@ -30,10 +29,7 @@ export const createGroup = async (req: Request, res: Response) => {
 			},
 		});
 
-		res.status(201).json({
-			message: "Group created successfully",
-			data: newGroup,
-		});
+		res.status(201).json(newGroup);
 	} catch (error) {
 		console.error("Error creating group", error);
 
@@ -54,10 +50,7 @@ export const editGroup = async (req: Request, res: Response) => {
 			data: { name },
 		});
 
-		res.status(201).json({
-			message: "Group edited successfully",
-			data: editedGroup,
-		});
+		res.status(201).json(editedGroup);
 	} catch (error) {
 		console.error("Error editing group", error);
 
@@ -77,10 +70,7 @@ export const deleteGroup = async (req: Request, res: Response) => {
 			},
 		});
 
-		res.status(200).json({
-			message: "Group deleted successfully",
-			group: deletedGroup,
-		});
+		res.status(200).json(deletedGroup);
 	} catch (error) {
 		console.error("Error deleting group", error);
 
