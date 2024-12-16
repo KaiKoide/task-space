@@ -36,7 +36,7 @@ function PopoverMenu({ type, data, children }: PopoverMenuProps) {
 	const [open, setOpen] = useState(false);
 	const [isEditName, setIsEditName] = useState(false);
 
-	function handleClickOption(option: string) {
+	async function handleClickOption(option: string) {
 		if (type === "task") {
 			switch (option) {
 				case "delete":
@@ -49,10 +49,24 @@ function PopoverMenu({ type, data, children }: PopoverMenuProps) {
 		} else if (type === "list") {
 			switch (option) {
 				case "delete":
-					deleteGroup(data.id);
-					setTasks((prevTasks) =>
-						prevTasks.filter((task) => task.groupId !== data.id),
-					);
+					try {
+						const response = await fetch(
+							`http://localhost:3000/api/v1/groups/${data.id}`,
+							{
+								method: "DELETE",
+							},
+						);
+
+						if (response.ok) {
+							deleteGroup(data.id);
+							setTasks((prevTasks) =>
+								prevTasks.filter((task) => task.groupId !== data.id),
+							);
+						}
+					} catch (error) {
+						console.error("Error deleting the group", error);
+					}
+
 					break;
 				case "edit":
 					setIsEditName(true);
