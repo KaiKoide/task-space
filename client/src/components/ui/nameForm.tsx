@@ -46,10 +46,27 @@ function NameForm({ onSave, data, type, isEdit = false }: NameFormProps) {
 		},
 	});
 
-	function onSubmit(values: z.infer<typeof formSchema>) {
+	async function onSubmit(values: z.infer<typeof formSchema>) {
 		if (isEdit && data) {
 			if ("name" in data) {
-				updateGroup(data.id, values.name);
+				try {
+					const { name } = values;
+
+					const response = await fetch(
+						`http://localhost:3000/api/v1/groups/${data.id}`,
+						{
+							method: "PUT",
+							headers: {
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify({ name }),
+						},
+					);
+
+					if (response.ok) updateGroup(data.id, name);
+				} catch (error) {
+					console.error("Error updating the group", error);
+				}
 			} else {
 				updateStatus(data.id, values.name);
 			}
