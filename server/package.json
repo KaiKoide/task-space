@@ -4,8 +4,8 @@
 	"main": "index.js",
 	"type": "module",
 	"scripts": {
-		"start": "ts-node src/index.ts",
-		"start:dev": "nodemon --watch src --exec node --loader ts-node/esm src/index.ts",
+		"start": "node --loader ts-node/esm api/index.ts",
+		"start:dev": "nodemon --watch src --exec node --loader ts-node/esm api/index.ts",
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"build": "tsc",
 		"serve": "node dist/index.js"

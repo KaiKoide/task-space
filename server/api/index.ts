@@ -1,10 +1,10 @@
 import cors from "cors";
 import express, { type Request, type Response } from "express";
 
-import { groupsRoute } from "./routes/group.route.js";
-import { statusRoute } from "./routes/status.route.js";
-import { userRoute } from "./routes/user.route.js";
-import { taskRoute } from "./routes/task.route.js";
+import { groupsRoute } from "../src/routes/group.route.js";
+import { statusRoute } from "../src/routes/status.route.js";
+import { userRoute } from "../src/routes/user.route.js";
+import { taskRoute } from "../src/routes/task.route.js";
 
 const app = express();
 const port = 3000;
