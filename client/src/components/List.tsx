@@ -61,16 +61,31 @@ function List() {
 		setOpenState((prev) => ({ ...prev, [taskId]: isOpen }));
 	}
 
-	function handleStatusSelect(taskId: string, newValueId: string) {
+	async function handleStatusSelect(taskId: string, newValueId: string) {
 		const status = statuses.find((status) => status.id === newValueId)?.status;
 
 		if (status) {
-			setValue((prev) => ({
-				...prev,
-				[taskId]: status,
-			}));
-			setOpenState((prev) => ({ ...prev, [taskId]: false }));
-			updateTask(taskId, { statusId: newValueId });
+			try {
+				const response = await fetch(
+					`http://localhost:3000/api/v1/tasks/${taskId}`,
+					{
+						method: "PUT",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ statusId: newValueId }),
+					},
+				);
+
+				if (!response.ok) throw new Error("Failed to update the task");
+
+				setValue((prev) => ({
+					...prev,
+					[taskId]: status,
+				}));
+				setOpenState((prev) => ({ ...prev, [taskId]: false }));
+				updateTask(taskId, { statusId: newValueId });
+			} catch (error) {
+				console.error("Error updating the task to server", error);
+			}
 		}
 	}
 
