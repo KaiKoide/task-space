@@ -52,9 +52,7 @@ function PopoverMenu({ type, data, children }: PopoverMenuProps) {
 					try {
 						const response = await fetch(
 							`http://localhost:3000/api/v1/groups/${data.id}`,
-							{
-								method: "DELETE",
-							},
+							{ method: "DELETE" },
 						);
 
 						if (response.ok) {
@@ -75,10 +73,23 @@ function PopoverMenu({ type, data, children }: PopoverMenuProps) {
 		} else if (type === "column") {
 			switch (option) {
 				case "delete":
-					deleteStatus(data.id);
-					setTasks((prevTasks) =>
-						prevTasks.filter((task) => task.statusId !== data.id),
-					);
+					try {
+						const response = await fetch(
+							`http://localhost:3000/api/v1/statuses/${data.id}`,
+							{
+								method: "DELETE",
+							},
+						);
+
+						if (!response.ok) throw new Error("Failed to delete the status");
+
+						deleteStatus(data.id);
+						setTasks((prevTasks) =>
+							prevTasks.filter((task) => task.statusId !== data.id),
+						);
+					} catch (error) {
+						console.error("Error deleting the group", error);
+					}
 					break;
 				case "edit":
 					setIsEditName(true);

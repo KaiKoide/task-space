@@ -36,7 +36,7 @@ import type { ITask } from "@/types/data";
 function List() {
 	const { tasks, updateTask, fetchTasks } = useTaskStore();
 	const { groups, fetchGroups } = useGroupStore();
-	const { statuses, addStatus, fetchStatus } = useStatusStore();
+	const { statuses, fetchStatus, addStatusToServer } = useStatusStore();
 	const [openState, setOpenState] = useState<{ [key: string]: boolean }>({});
 	const [value, setValue] = useState<{ [key: string]: string }>({});
 	const [open, setOpen] = useState(false);
@@ -74,12 +74,12 @@ function List() {
 		}
 	}
 
-	function handleAddStatus() {
+	async function handleAddStatus() {
 		const newStatus = {
 			id: uuidv4().toString(),
 			status: newStatusName.trim(),
 		};
-		addStatus(newStatus);
+		await addStatusToServer(newStatus);
 		setNewStatusName("");
 	}
 

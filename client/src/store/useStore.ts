@@ -29,6 +29,7 @@ interface StatusState {
 	deleteStatus: (statusId: string) => void;
 	updateStatus: (statusId: string, updatedStatus: string) => void;
 	fetchStatus: () => void;
+	addStatusToServer: (status: IStatus) => void;
 }
 
 const useTaskStore = create<TaskState>((set) => ({
@@ -94,9 +95,7 @@ const useGroupStore = create<GroupState>((set) => ({
 				body: JSON.stringify(group),
 			});
 
-			if (!response.ok) {
-				throw new Error("Failed to add group");
-			}
+			if (!response.ok) throw new Error("Failed to add group");
 
 			set((state) => ({ groups: [...state.groups, group] }));
 		} catch (error) {
@@ -133,6 +132,23 @@ const useStatusStore = create<StatusState>((set) => ({
 			set({ statuses: data });
 		} catch (error) {
 			console.error("Failed to fetch statuses", error);
+		}
+	},
+	addStatusToServer: async (status: IStatus) => {
+		try {
+			const response = await fetch("http://localhost:3000/api/v1/statuses", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(status),
+			});
+
+			if (!response.ok) throw new Error("Failed to add the status");
+
+			set((state) => ({ statuses: [...state.statuses, status] }));
+		} catch (error) {
+			console.error("Error adding status to server", error);
 		}
 	},
 }));
