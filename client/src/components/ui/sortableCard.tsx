@@ -1,6 +1,8 @@
-import { CSS } from "@dnd-kit/utilities";
+import { format } from "date-fns";
 import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
+import { Badge } from "@/components/ui/badge";
 import {
 	Card,
 	CardContent,
@@ -8,10 +10,10 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import PopoverMenu from "@/components/ui/popoverMenu";
 
 import type { ITask } from "@/types/data";
+
 interface SortableCardProps {
 	task: ITask;
 	groupName: string;
@@ -55,7 +57,7 @@ function SortableCard({ task, groupName }: SortableCardProps) {
 					</PopoverMenu>
 				</CardTitle>
 				<Badge>{groupName}</Badge>
-				<CardDescription>{task.due_date}</CardDescription>
+				<CardDescription>{format(task.dueDate, "yyyy-MM-dd")}</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<p>{task.description}</p>

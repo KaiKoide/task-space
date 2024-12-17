@@ -1,8 +1,9 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Cookie } from "lucide-react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -31,8 +32,12 @@ const formSchema = z.object({
 });
 
 function NameForm({ onSave, data, type, isEdit = false }: NameFormProps) {
-	const { updateGroup, addGroup } = useGroupStore();
-	const { updateStatus, addStatus } = useStatusStore();
+	const { updateGroup, addGroupToServer } = useGroupStore();
+	const { updateStatus, fetchStatus, addStatusToServer } = useStatusStore();
+
+	useEffect(() => {
+		fetchStatus();
+	}, []);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -41,12 +46,46 @@ function NameForm({ onSave, data, type, isEdit = false }: NameFormProps) {
 		},
 	});
 
-	function onSubmit(values: z.infer<typeof formSchema>) {
+	async function onSubmit(values: z.infer<typeof formSchema>) {
 		if (isEdit && data) {
 			if ("name" in data) {
-				updateGroup(data.id, values.name);
+				try {
+					const { name } = values;
+
+					const response = await fetch(
+						`http://localhost:3000/api/v1/groups/${data.id}`,
+						{
+							method: "PUT",
+							headers: {
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify({ name }),
+						},
+					);
+
+					if (!response.ok) throw new Error("Failed to update the group");
+
+					updateGroup(data.id, name);
+				} catch (error) {
+					console.error("Error updating the group", error);
+				}
 			} else {
-				updateStatus(data.id, values.name);
+				try {
+					const response = await fetch(
+						`http://localhost:3000/api/v1/statuses/${data.id}`,
+						{
+							method: "PUT",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify({ status: values.name }),
+						},
+					);
+
+					if (!response.ok) throw new Error("Failed to update the status");
+
+					updateStatus(data.id, values.name);
+				} catch (error) {
+					console.error("Error updating the status to server", error);
+				}
 			}
 		} else {
 			if (type === "status") {
@@ -54,14 +93,15 @@ function NameForm({ onSave, data, type, isEdit = false }: NameFormProps) {
 					id: uuidv4().toString(),
 					status: values.name,
 				};
-				addStatus(newStatus);
+				await addStatusToServer(newStatus);
 			} else {
 				const newGroup = {
 					id: uuidv4().toString(),
 					name: values.name,
-					created_at: new Date().toISOString(),
+					createdAt: new Date().toISOString(),
 				};
-				addGroup(newGroup);
+
+				await addGroupToServer(newGroup);
 			}
 		}
 		onSave();

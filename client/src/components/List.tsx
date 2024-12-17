@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { format } from "date-fns";
 import { Check, CirclePlus, Plus } from "lucide-react";
+import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import { Button } from "@/components/ui/button";
@@ -33,16 +34,22 @@ import { useTaskStore, useGroupStore, useStatusStore } from "@/store/useStore";
 import type { ITask } from "@/types/data";
 
 function List() {
-	const { tasks, updateTask } = useTaskStore();
-	const { groups } = useGroupStore();
-	const { statuses, addStatus } = useStatusStore();
+	const { tasks, updateTask, fetchTasks } = useTaskStore();
+	const { groups, fetchGroups } = useGroupStore();
+	const { statuses, fetchStatus, addStatusToServer } = useStatusStore();
 	const [openState, setOpenState] = useState<{ [key: string]: boolean }>({});
 	const [value, setValue] = useState<{ [key: string]: string }>({});
 	const [open, setOpen] = useState(false);
 	const [newStatusName, setNewStatusName] = useState("");
 
+	useEffect(() => {
+		fetchStatus();
+		fetchTasks();
+		fetchGroups();
+	}, []);
+
 	const groupedTasks = tasks.reduce((acc: Record<string, ITask[]>, task) => {
-		const groupId = task.group_id || "no_group";
+		const groupId = task.groupId || "no_group";
 		if (!acc[groupId]) {
 			acc[groupId] = [];
 		}
@@ -54,25 +61,40 @@ function List() {
 		setOpenState((prev) => ({ ...prev, [taskId]: isOpen }));
 	}
 
-	function handleStatusSelect(taskId: string, newValueId: string) {
+	async function handleStatusSelect(taskId: string, newValueId: string) {
 		const status = statuses.find((status) => status.id === newValueId)?.status;
 
 		if (status) {
-			setValue((prev) => ({
-				...prev,
-				[taskId]: status,
-			}));
-			setOpenState((prev) => ({ ...prev, [taskId]: false }));
-			updateTask(taskId, { status_id: newValueId });
+			try {
+				const response = await fetch(
+					`http://localhost:3000/api/v1/tasks/${taskId}`,
+					{
+						method: "PUT",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ statusId: newValueId }),
+					},
+				);
+
+				if (!response.ok) throw new Error("Failed to update the task");
+
+				setValue((prev) => ({
+					...prev,
+					[taskId]: status,
+				}));
+				setOpenState((prev) => ({ ...prev, [taskId]: false }));
+				updateTask(taskId, { statusId: newValueId });
+			} catch (error) {
+				console.error("Error updating the task to server", error);
+			}
 		}
 	}
 
-	function handleAddStatus() {
+	async function handleAddStatus() {
 		const newStatus = {
 			id: uuidv4().toString(),
 			status: newStatusName.trim(),
 		};
-		addStatus(newStatus);
+		await addStatusToServer(newStatus);
 		setNewStatusName("");
 	}
 
@@ -130,7 +152,7 @@ function List() {
 												{value[task.id]
 													? value[task.id]
 													: statuses.find(
-															(status) => status.id === task.status_id,
+															(status) => status.id === task.statusId,
 														)?.status}
 											</Button>
 										</PopoverTrigger>
@@ -181,7 +203,7 @@ function List() {
 									</Popover>
 								</TableCell>
 								<TableCell className="border-r border-custom-default/30">
-									{task.due_date}
+									{format(task.dueDate, "yyyy-MM-dd")}
 								</TableCell>
 								<TableCell className="text-right max-w-52">
 									{task.description}

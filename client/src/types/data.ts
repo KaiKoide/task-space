@@ -1,14 +1,14 @@
 export interface IGroup {
 	id: string;
 	name: string;
-	created_at: string;
+	createdAt: string;
 }
 
 export interface IGroupMembers {
-	user_id: string;
-	group_id: string;
+	userId: string;
+	groupId: string;
 	role: string;
-	joined_at: string;
+	joinedAt: string;
 }
 
 export interface IStatus {
@@ -26,16 +26,16 @@ export interface ITask {
 	id: string;
 	title: string;
 	description: string;
-	created_at: string;
-	due_date: string;
-	status_id: string;
-	group_id: string | undefined;
-	created_by: string;
+	createdAt: string;
+	dueDate: string;
+	statusId: string;
+	groupId: string | undefined;
+	createdBy: string;
 }
 
 export interface ITaskTags {
-	task_id: string;
-	tag_id: string;
+	taskId: string;
+	tagId: string;
 }
 
 export interface IUser {
@@ -43,5 +43,5 @@ export interface IUser {
 	name: string;
 	email: string;
 	password: string;
-	created_at: string;
+	createdAt: string;
 }

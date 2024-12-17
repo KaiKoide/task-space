@@ -7,7 +7,7 @@ import {
 	CirclePlus,
 	PawPrint,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
@@ -62,11 +62,16 @@ const formSchema = z.object({
 
 function TaskForm({ onSave, task }: TaskFormProps) {
 	const [newGroupName, setNewGroupName] = useState("");
-	const { addTask, updateTask } = useTaskStore();
-	const { groups, addGroup } = useGroupStore();
-	const { statuses } = useStatusStore();
+	const { addTask, updateTask, fetchTasks } = useTaskStore();
+	const { groups, addGroupToServer } = useGroupStore();
+	const { statuses, fetchStatus } = useStatusStore();
 
-	const groupName = groups.find((group) => group.id === task?.group_id)?.name;
+	useEffect(() => {
+		fetchStatus();
+		fetchTasks();
+	}, []);
+
+	const groupName = groups.find((group) => group.id === task?.groupId)?.name;
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -74,41 +79,69 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 			title: task?.title || "",
 			description: task?.description || "",
 			group: task ? groupName : "",
-			dueDate: task?.due_date ? new Date(task.due_date) : undefined,
+			dueDate: task?.dueDate ? new Date(task.dueDate) : undefined,
 		},
 	});
 
-	function onSubmit(values: z.infer<typeof formSchema>) {
+	async function onSubmit(values: z.infer<typeof formSchema>) {
 		const newTask = {
 			id: task?.id || uuidv4().toString(),
 			title: values.title,
 			description: values.description,
-			due_date: values.dueDate
-				? format(values.dueDate, "yyyy-MM-dd")
-				: task?.due_date || new Date().toISOString(),
-			group_id: groups.find((group) => group.name === values.group)?.id,
-			created_at: task?.created_at || new Date().toISOString(),
-			status_id:
-				task?.status_id ||
+			dueDate: values.dueDate
+				? new Date(values.dueDate).toISOString()
+				: task?.dueDate || new Date().toISOString(),
+			groupId: groups.find((group) => group.name === values.group)?.id,
+			createdAt: task?.createdAt || new Date().toISOString(),
+			statusId:
+				task?.statusId ||
 				(statuses.find((status) => status.status === "todo")?.id as string),
-			created_by: task?.created_by || "a1b2c3d4-5678-90ab-cdef-1234567890ab",
+			createdBy: task?.createdBy || "c2bab88c-04c3-4fa4-adb4-ede83b64193e",
 		};
+
 		if (task) {
-			updateTask(task.id, newTask);
+			try {
+				const response = await fetch(
+					`http://localhost:3000/api/v1/tasks/${task.id}`,
+					{
+						method: "PUT",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify(newTask),
+					},
+				);
+
+				if (!response.ok) throw new Error("Failed to update the task");
+
+				updateTask(task.id, newTask);
+			} catch (error) {
+				console.error("Error updating the task to server", error);
+			}
 		} else {
-			addTask(newTask);
+			try {
+				const response = await fetch("http://localhost:3000/api/v1/tasks", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(newTask),
+				});
+
+				if (!response.ok) throw new Error("Failed to add the task");
+
+				addTask(newTask);
+			} catch (error) {
+				console.error("Error adding task to server", error);
+			}
 		}
 		onSave();
 	}
 
-	function handleAddGroup() {
+	async function handleAddGroup() {
 		const newGroup = {
 			id: uuidv4().toString(),
 			name: newGroupName.trim(),
-			created_at: new Date().toISOString(),
+			createdAt: new Date().toISOString(),
 		};
-		addGroup(newGroup);
-		setNewGroupName("");
+
+		await addGroupToServer(newGroup);
 	}
 
 	function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -148,14 +181,14 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 											role="combobox"
 											className={cn(
 												"w-[200px] justify-between rounded-md px-3 font-normal",
-												!(field.value || task?.group_id) &&
+												!(field.value || task?.groupId) &&
 													"text-muted-foreground",
 											)}
 										>
 											{field.value
 												? groups.find((group) => group.name === field.value)
 														?.name
-												: task?.group_id
+												: task?.groupId
 													? groupName
 													: "Select group"}
 											<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -223,7 +256,7 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 										>
 											{field.value
 												? format(field.value, "yyyy-MM-dd")
-												: task?.due_date || <span>Pick a date</span>}
+												: task?.dueDate || <span>Pick a date</span>}
 											<CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
 										</Button>
 									</FormControl>
