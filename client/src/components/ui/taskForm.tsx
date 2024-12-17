@@ -100,7 +100,22 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 		};
 
 		if (task) {
-			updateTask(task.id, newTask);
+			try {
+				const response = await fetch(
+					`http://localhost:3000/api/v1/tasks/${task.id}`,
+					{
+						method: "PUT",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify(newTask),
+					},
+				);
+
+				if (!response.ok) throw new Error("Failed to update the task");
+
+				updateTask(task.id, newTask);
+			} catch (error) {
+				console.error("Error updating the task to server", error);
+			}
 		} else {
 			try {
 				const response = await fetch("http://localhost:3000/api/v1/tasks", {

@@ -40,7 +40,20 @@ function PopoverMenu({ type, data, children }: PopoverMenuProps) {
 		if (type === "task") {
 			switch (option) {
 				case "delete":
-					deleteTask(data.id);
+					try {
+						const response = await fetch(
+							`http://localhost:3000/api/v1/tasks/${data.id}`,
+							{
+								method: "DELETE",
+							},
+						);
+
+						if (!response.ok) throw new Error("Failed to delete the task");
+
+						deleteTask(data.id);
+					} catch (error) {
+						console.error("Error deleting the task", error);
+					}
 					break;
 				case "edit":
 					setOpen(true);
@@ -55,12 +68,12 @@ function PopoverMenu({ type, data, children }: PopoverMenuProps) {
 							{ method: "DELETE" },
 						);
 
-						if (response.ok) {
-							deleteGroup(data.id);
-							setTasks((prevTasks) =>
-								prevTasks.filter((task) => task.groupId !== data.id),
-							);
-						}
+						if (!response.ok) throw new Error("Failed to delete the group");
+
+						deleteGroup(data.id);
+						setTasks((prevTasks) =>
+							prevTasks.filter((task) => task.groupId !== data.id),
+						);
 					} catch (error) {
 						console.error("Error deleting the group", error);
 					}
