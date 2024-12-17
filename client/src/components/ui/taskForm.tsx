@@ -83,25 +83,38 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 		},
 	});
 
-	function onSubmit(values: z.infer<typeof formSchema>) {
+	async function onSubmit(values: z.infer<typeof formSchema>) {
 		const newTask = {
 			id: task?.id || uuidv4().toString(),
 			title: values.title,
 			description: values.description,
 			dueDate: values.dueDate
-				? format(values.dueDate, "yyyy-MM-dd")
+				? new Date(values.dueDate).toISOString()
 				: task?.dueDate || new Date().toISOString(),
 			groupId: groups.find((group) => group.name === values.group)?.id,
 			createdAt: task?.createdAt || new Date().toISOString(),
 			statusId:
 				task?.statusId ||
 				(statuses.find((status) => status.status === "todo")?.id as string),
-			createdBy: task?.createdBy || "a1b2c3d4-5678-90ab-cdef-1234567890ab",
+			createdBy: task?.createdBy || "c2bab88c-04c3-4fa4-adb4-ede83b64193e",
 		};
+
 		if (task) {
 			updateTask(task.id, newTask);
 		} else {
-			addTask(newTask);
+			try {
+				const response = await fetch("http://localhost:3000/api/v1/tasks", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(newTask),
+				});
+
+				if (!response.ok) throw new Error("Failed to add the task");
+
+				addTask(newTask);
+			} catch (error) {
+				console.error("Error adding task to server", error);
+			}
 		}
 		onSave();
 	}
