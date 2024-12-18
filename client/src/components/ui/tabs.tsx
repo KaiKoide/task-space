@@ -13,7 +13,7 @@ function TabsComponent() {
 	const [open, setOpen] = useState(false);
 
 	return (
-		<Tabs className="top-12 left-0 w-full mx-10">
+		<Tabs className="top-12 w-full">
 			<TabList className="flex border-b border-custom-default gap-3">
 				<Tab
 					className="px-4 py-2 cursor-pointer bg-white/50 focus:outline-none hover:opacity-70 border-t border-x border-custom-default rounded-t-md"
