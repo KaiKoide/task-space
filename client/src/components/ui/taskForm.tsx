@@ -87,6 +87,12 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 	});
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
+		if (!user) {
+			console.error("User is not authenticated.");
+			alert("Error: User is not authenticated. Please log in.");
+			return;
+		}
+
 		const newTask = {
 			id: task?.id || uuidv4().toString(),
 			title: values.title,
@@ -99,7 +105,7 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 			statusId:
 				task?.statusId ||
 				(statuses.find((status) => status.status === "todo")?.id as string),
-			createdBy: task?.createdBy || user?.id,
+			createdBy: task?.createdBy || user.id,
 		};
 
 		if (task) {
@@ -138,10 +144,17 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 	}
 
 	async function handleAddGroup() {
+		if (!user) {
+			console.error("User is not authenticated.");
+			alert("Error: User is not authenticated. Please log in.");
+			return;
+		}
+
 		const newGroup = {
 			id: uuidv4().toString(),
 			name: newGroupName.trim(),
 			createdAt: new Date().toISOString(),
+			createdBy: user.id,
 		};
 
 		await addGroupToServer(newGroup);

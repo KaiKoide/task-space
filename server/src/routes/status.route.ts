@@ -1,6 +1,6 @@
 import express from "express";
 
-import * as statusController from "../controllers/status.controller.js";
+import * as statusController from "../controllers/status.controller";
 
 export const statusRoute = express();
 

@@ -19,8 +19,7 @@ model Group {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model Status {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  createdAt DateTime @db.Timestamp(6)
+  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   status    String
   createdBy String?
   Task      Task[]
@@ -33,9 +32,9 @@ model Task {
   title       String
   description String?
   dueDate     DateTime @db.Timestamp(6)
-  createdBy   String
   groupId     String   @db.Uuid
   statusId    String   @db.Uuid
+  createdBy   String
   Group       Group    @relation(fields: [groupId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Status      Status   @relation(fields: [statusId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

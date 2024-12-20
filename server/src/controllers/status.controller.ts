@@ -13,12 +13,13 @@ export const getStatuses = async (req: Request, res: Response) => {
 };
 
 export const createStatus = async (req: Request, res: Response) => {
-	const { id, status } = req.body;
+	const { id, status, createdBy } = req.body;
 	try {
 		const newStatus = await prisma.status.create({
 			data: {
 				id,
 				status,
+				createdBy,
 			},
 		});
 

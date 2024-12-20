@@ -1,6 +1,6 @@
 import express from "express";
 
-import * as groupsController from "../controllers/group.controller.js";
+import * as groupsController from "../controllers/group.controller";
 
 export const groupsRoute = express();
 

@@ -101,7 +101,9 @@ function NameForm({ onSave, data, type, isEdit = false }: NameFormProps) {
 				const newStatus = {
 					id: uuidv4().toString(),
 					status: values.name,
+					createdBy: user.id,
 				};
+
 				await addStatusToServer(newStatus);
 			} else {
 				console.log(user.id);

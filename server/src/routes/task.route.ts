@@ -1,6 +1,6 @@
 import express from "express";
 
-import * as taskController from "../controllers/task.controller.js";
+import * as taskController from "../controllers/task.controller";
 
 export const taskRoute = express();
 
