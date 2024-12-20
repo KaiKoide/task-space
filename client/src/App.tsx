@@ -3,16 +3,11 @@ import {
 	SignedOut,
 	UserButton,
 	RedirectToSignUp,
-	useUser,
 } from "@clerk/clerk-react";
 
 import TabsComponent from "./components/ui/tabs";
 
 function App() {
-	const { isSignedIn, user, isLoaded } = useUser();
-
-	console.log(isSignedIn, user, isLoaded);
-
 	return (
 		<>
 			{/* When you're not logged in */}

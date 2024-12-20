@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
+import { useUser } from "@clerk/clerk-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button } from "@/components/ui/button";
@@ -35,6 +36,8 @@ function NameForm({ onSave, data, type, isEdit = false }: NameFormProps) {
 	const { updateGroup, addGroupToServer } = useGroupStore();
 	const { updateStatus, fetchStatus, addStatusToServer } = useStatusStore();
 
+	const { user } = useUser();
+
 	useEffect(() => {
 		fetchStatus();
 	}, []);
@@ -47,6 +50,12 @@ function NameForm({ onSave, data, type, isEdit = false }: NameFormProps) {
 	});
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
+		if (!user) {
+			console.error("User is not authenticated.");
+			alert("Error: User is not authenticated. Please log in.");
+			return;
+		}
+
 		if (isEdit && data) {
 			if ("name" in data) {
 				try {
@@ -95,10 +104,13 @@ function NameForm({ onSave, data, type, isEdit = false }: NameFormProps) {
 				};
 				await addStatusToServer(newStatus);
 			} else {
+				console.log(user.id);
+
 				const newGroup = {
 					id: uuidv4().toString(),
 					name: values.name,
 					createdAt: new Date().toISOString(),
+					createdBy: user.id,
 				};
 
 				await addGroupToServer(newGroup);

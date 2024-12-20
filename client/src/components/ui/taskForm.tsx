@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
+import { useUser } from "@clerk/clerk-react";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -66,6 +67,8 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 	const { groups, addGroupToServer } = useGroupStore();
 	const { statuses, fetchStatus } = useStatusStore();
 
+	const { user } = useUser();
+
 	useEffect(() => {
 		fetchStatus();
 		fetchTasks();
@@ -96,7 +99,7 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 			statusId:
 				task?.statusId ||
 				(statuses.find((status) => status.status === "todo")?.id as string),
-			createdBy: task?.createdBy || "c2bab88c-04c3-4fa4-adb4-ede83b64193e",
+			createdBy: task?.createdBy || user?.id,
 		};
 
 		if (task) {

@@ -19,13 +19,14 @@ export const getGroups = async (req: Request, res: Response) => {
 };
 
 export const createGroup = async (req: Request, res: Response) => {
-	const { id, name, createdAt } = req.body;
+	const { id, name, createdAt, createdBy } = req.body;
 	try {
 		const newGroup = await prisma.group.create({
 			data: {
 				id,
 				name,
 				createdAt,
+				createdBy,
 			},
 		});
 
