@@ -2,11 +2,10 @@
 	"name": "server",
 	"version": "1.0.0",
 	"main": "index.js",
-	"type": "module",
+	"type": "commonjs",
 	"scripts": {
-		"start": "node --loader ts-node/esm api/index.ts",
-		"start:dev": "nodemon --watch src --exec node --loader ts-node/esm api/index.ts",
-		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "node --experimental-specifier-resolution=node --loader ts-node/esm api/index.ts",
+		"start:dev": "nodemon api/index.ts",
 		"build": "tsc",
 		"serve": "node dist/index.js"
 	},
