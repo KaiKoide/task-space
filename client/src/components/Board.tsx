@@ -13,6 +13,7 @@ import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 import { Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import { useUser } from "@clerk/clerk-react";
 
 import { Button } from "@/components/ui/button";
 import Column from "@/components/ui/column";
@@ -30,10 +31,18 @@ function Board() {
 	const [activeTask, setActiveTask] = useState<ITask | null>(null);
 	const [open, setOpen] = useState(false);
 
+	const { user } = useUser();
+
 	useEffect(() => {
+		if (!user) {
+			console.error("User is not authenticated.");
+			alert("Error: User is not authenticated. Please log in.");
+			return;
+		}
+
 		fetchTasks();
 		fetchStatus();
-		fetchGroups();
+		fetchGroups(user.id);
 	}, []);
 
 	const groupedTasks = tasks.reduce((acc: Record<string, ITask[]>, task) => {

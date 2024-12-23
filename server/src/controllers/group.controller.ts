@@ -5,14 +5,19 @@ const prisma = new PrismaClient();
 
 export const getGroups = async (req: Request, res: Response) => {
 	try {
-		const groups = await prisma.group.findMany();
+		const { userId } = req.params;
+
+		const groups = await prisma.group.findMany({
+			where: {
+				createdBy: userId,
+			},
+		});
 
 		res.status(200).json(groups);
 	} catch (error) {
-		console.error("Error fetching groups", error);
-
+		console.error("Error fetching user groups:", error);
 		res.status(500).json({
-			error: "Failed fetching groups",
+			error: "Failed to fetch user groups",
 			details: error instanceof Error ? error.message : "Unknown error",
 		});
 	}

@@ -1,5 +1,7 @@
 import cors from "cors";
+import "dotenv/config";
 import express, { type Request, type Response } from "express";
+import { clerkMiddleware } from "@clerk/express";
 
 import { groupsRoute } from "../src/routes/group.route";
 import { statusRoute } from "../src/routes/status.route";
@@ -33,7 +35,15 @@ const defaultRoutes = [
 
 app.use(cors());
 
-app.use(express.json());
+app.use(clerkMiddleware());
+
+app.use(
+	cors({
+		origin: "http://localhost:5173",
+		methods: ["GET", "POST", "PUT", "DELETE"],
+		allowedHeaders: ["Authorization", "Content-Type"],
+	}),
+);
 
 app.get("/", (req: Request, res: Response) => {
 	res.send("Hello World!");

@@ -16,7 +16,7 @@ interface GroupState {
 	addGroup: (newGroup: IGroup) => void;
 	deleteGroup: (groupId: string) => void;
 	updateGroup: (groupId: string, updatedGroup: string) => void;
-	fetchGroups: () => void;
+	fetchGroups: (userId: string) => void;
 	addGroupToServer: (group: IGroup) => void;
 }
 
@@ -76,9 +76,9 @@ const useGroupStore = create<GroupState>((set) => ({
 				group.id === groupId ? { ...group, name: updatedGroup } : group,
 			),
 		})),
-	fetchGroups: async () => {
+	fetchGroups: async (userId: string) => {
 		try {
-			const res = await fetch("http://localhost:3000/api/v1/groups");
+			const res = await fetch(`http://localhost:3000/api/v1/groups/${userId}`);
 			const data: IGroup[] = await res.json();
 			set({ groups: data });
 		} catch (error) {

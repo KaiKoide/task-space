@@ -106,8 +106,6 @@ function NameForm({ onSave, data, type, isEdit = false }: NameFormProps) {
 
 				await addStatusToServer(newStatus);
 			} else {
-				console.log(user.id);
-
 				const newGroup = {
 					id: uuidv4().toString(),
 					name: values.name,

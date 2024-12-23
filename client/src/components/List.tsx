@@ -2,6 +2,7 @@ import { format } from "date-fns";
 import { Check, CirclePlus, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { useUser } from "@clerk/clerk-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -42,10 +43,18 @@ function List() {
 	const [open, setOpen] = useState(false);
 	const [newStatusName, setNewStatusName] = useState("");
 
+	const { user } = useUser();
+
 	useEffect(() => {
+		if (!user) {
+			console.error("User is not authenticated.");
+			alert("Error: User is not authenticated. Please log in.");
+			return;
+		}
+
 		fetchStatus();
 		fetchTasks();
-		fetchGroups();
+		fetchGroups(user.id);
 	}, []);
 
 	const groupedTasks = tasks.reduce((acc: Record<string, ITask[]>, task) => {
