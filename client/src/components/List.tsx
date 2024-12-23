@@ -52,9 +52,11 @@ function List() {
 			return;
 		}
 
-		fetchStatus();
+		const userId = user.id;
+
+		fetchStatus(userId);
 		fetchTasks();
-		fetchGroups(user.id);
+		fetchGroups(userId);
 	}, []);
 
 	const groupedTasks = tasks.reduce((acc: Record<string, ITask[]>, task) => {

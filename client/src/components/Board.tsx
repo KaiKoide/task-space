@@ -40,9 +40,11 @@ function Board() {
 			return;
 		}
 
+		const userId = user.id;
+
 		fetchTasks();
-		fetchStatus();
-		fetchGroups(user.id);
+		fetchStatus(userId);
+		fetchGroups(userId);
 	}, []);
 
 	const groupedTasks = tasks.reduce((acc: Record<string, ITask[]>, task) => {

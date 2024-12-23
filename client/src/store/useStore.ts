@@ -28,7 +28,7 @@ interface StatusState {
 	addStatus: (newStatus: IStatus) => void;
 	deleteStatus: (statusId: string) => void;
 	updateStatus: (statusId: string, updatedStatus: string) => void;
-	fetchStatus: () => void;
+	fetchStatus: (userId: string) => void;
 	addStatusToServer: (status: IStatus) => void;
 }
 
@@ -125,9 +125,11 @@ const useStatusStore = create<StatusState>((set) => ({
 				status.id === statusId ? { ...status, status: updatedStatus } : status,
 			),
 		})),
-	fetchStatus: async () => {
+	fetchStatus: async (userId: string) => {
 		try {
-			const res = await fetch("http://localhost:3000/api/v1/statuses");
+			const res = await fetch(
+				`http://localhost:3000/api/v1/statuses/${userId}`,
+			);
 			const data: IStatus[] = await res.json();
 			set({ statuses: data });
 		} catch (error) {

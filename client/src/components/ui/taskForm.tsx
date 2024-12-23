@@ -70,7 +70,7 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 	const { user } = useUser();
 
 	useEffect(() => {
-		fetchStatus();
+		// fetchStatus();
 		fetchTasks();
 	}, []);
 

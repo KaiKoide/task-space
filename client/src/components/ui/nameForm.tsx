@@ -38,9 +38,9 @@ function NameForm({ onSave, data, type, isEdit = false }: NameFormProps) {
 
 	const { user } = useUser();
 
-	useEffect(() => {
-		fetchStatus();
-	}, []);
+	// useEffect(() => {
+	// 	fetchStatus();
+	// }, []);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),

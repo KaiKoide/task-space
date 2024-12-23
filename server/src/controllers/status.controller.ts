@@ -5,7 +5,13 @@ const prisma = new PrismaClient();
 
 export const getStatuses = async (req: Request, res: Response) => {
 	try {
-		const statuses = await prisma.status.findMany();
+		const { userId } = req.params;
+
+		const statuses = await prisma.status.findMany({
+			where: {
+				OR: [{ createdBy: userId }, { createdBy: null }],
+			},
+		});
 		res.status(200).json(statuses);
 	} catch (error) {
 		res.status(500).json({ error: "Failed to fetch statuses" });
