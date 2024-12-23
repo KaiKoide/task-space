@@ -42,7 +42,7 @@ function Board() {
 
 		const userId = user.id;
 
-		fetchTasks();
+		fetchTasks(userId);
 		fetchStatus(userId);
 		fetchGroups(userId);
 	}, []);

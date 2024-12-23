@@ -8,7 +8,7 @@ interface TaskState {
 	addTask: (newTasks: ITask) => void;
 	deleteTask: (id: string) => void;
 	updateTask: (taskId: string, updatedTask: Partial<ITask>) => void;
-	fetchTasks: () => void;
+	fetchTasks: (userId: string) => void;
 }
 
 interface GroupState {
@@ -50,9 +50,9 @@ const useTaskStore = create<TaskState>((set) => ({
 				task.id === taskId ? { ...task, ...updatedTask } : task,
 			),
 		})),
-	fetchTasks: async () => {
+	fetchTasks: async (userId: string) => {
 		try {
-			const res = await fetch("http://localhost:3000/api/v1/tasks");
+			const res = await fetch(`http://localhost:3000/api/v1/tasks/${userId}`);
 			const data: ITask[] = await res.json();
 			set({ tasks: data });
 			set({});

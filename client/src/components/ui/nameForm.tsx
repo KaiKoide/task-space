@@ -38,9 +38,17 @@ function NameForm({ onSave, data, type, isEdit = false }: NameFormProps) {
 
 	const { user } = useUser();
 
-	// useEffect(() => {
-	// 	fetchStatus();
-	// }, []);
+	useEffect(() => {
+		if (!user) {
+			console.error("User is not authenticated.");
+			alert("Error: User is not authenticated. Please log in.");
+			return;
+		}
+
+		const userId = user.id;
+
+		fetchStatus(userId);
+	}, []);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),

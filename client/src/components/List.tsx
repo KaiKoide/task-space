@@ -55,7 +55,7 @@ function List() {
 		const userId = user.id;
 
 		fetchStatus(userId);
-		fetchTasks();
+		fetchTasks(userId);
 		fetchGroups(userId);
 	}, []);
 

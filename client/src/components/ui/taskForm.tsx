@@ -70,8 +70,16 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 	const { user } = useUser();
 
 	useEffect(() => {
-		// fetchStatus();
-		fetchTasks();
+		if (!user) {
+			console.error("User is not authenticated.");
+			alert("Error: User is not authenticated. Please log in.");
+			return;
+		}
+
+		const userId = user.id;
+
+		fetchStatus(userId);
+		fetchTasks(userId);
 	}, []);
 
 	const groupName = groups.find((group) => group.id === task?.groupId)?.name;
