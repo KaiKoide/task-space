@@ -2,6 +2,7 @@ export interface IGroup {
 	id: string;
 	name: string;
 	createdAt: string;
+	createdBy: string;
 }
 
 export interface IGroupMembers {
@@ -14,6 +15,7 @@ export interface IGroupMembers {
 export interface IStatus {
 	id: string;
 	status: string;
+	createdBy: string | null;
 }
 
 export interface ITags {

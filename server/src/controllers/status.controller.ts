@@ -5,7 +5,29 @@ const prisma = new PrismaClient();
 
 export const getStatuses = async (req: Request, res: Response) => {
 	try {
-		const statuses = await prisma.status.findMany();
+		const { userId } = req.params;
+
+		let statuses = await prisma.status.findMany({
+			where: { createdBy: userId },
+		});
+
+		if (statuses.length === 0) {
+			const defaultStatus = await prisma.status.findMany({
+				where: { createdBy: null },
+			});
+
+			const userStatuses = defaultStatus.map((status) => ({
+				status: status.status,
+				createdBy: userId,
+			}));
+
+			await prisma.status.createMany({ data: userStatuses });
+
+			statuses = await prisma.status.findMany({
+				where: { createdBy: userId },
+			});
+		}
+
 		res.status(200).json(statuses);
 	} catch (error) {
 		res.status(500).json({ error: "Failed to fetch statuses" });
@@ -13,12 +35,13 @@ export const getStatuses = async (req: Request, res: Response) => {
 };
 
 export const createStatus = async (req: Request, res: Response) => {
-	const { id, status } = req.body;
+	const { id, status, createdBy } = req.body;
 	try {
 		const newStatus = await prisma.status.create({
 			data: {
 				id,
 				status,
+				createdBy,
 			},
 		});
 

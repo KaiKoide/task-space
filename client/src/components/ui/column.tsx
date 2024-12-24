@@ -40,14 +40,16 @@ function Column({ statusData, groupedTasks, groups, isDragging }: ColumnProps) {
 			style={style}
 			className="backdrop-blur-sm bg-white/50 relative p-3 rounded-md min-w-80 min-h-60"
 		>
-			<Badge
-				variant="secondary"
-				className={cn("capitalize mb-3 text-lg rounded-lg")}
-				{...attributes}
-				{...listeners}
-			>
-				{statusData.status.replace("_", " ")}
-			</Badge>
+			<div className="flex justify-center">
+				<Badge
+					variant="secondary"
+					className={cn("capitalize mb-3 text-lg rounded-lg")}
+					{...attributes}
+					{...listeners}
+				>
+					{statusData.status}
+				</Badge>
+			</div>
 			<div className="absolute m-3 top-1 right-2 cursor-pointer">
 				<PopoverMenu type={"column"} data={statusData} />
 			</div>

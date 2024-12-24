@@ -1,10 +1,10 @@
 import cors from "cors";
+import "dotenv/config";
 import express, { type Request, type Response } from "express";
 
-import { groupsRoute } from "../src/routes/group.route.js";
-import { statusRoute } from "../src/routes/status.route.js";
-import { userRoute } from "../src/routes/user.route.js";
-import { taskRoute } from "../src/routes/task.route.js";
+import { groupsRoute } from "../src/routes/group.route";
+import { statusRoute } from "../src/routes/status.route";
+import { taskRoute } from "../src/routes/task.route";
 
 const app = express();
 const port = 3000;
@@ -22,18 +22,20 @@ const defaultRoutes = [
 		route: statusRoute,
 	},
 	{
-		path: `/${base_path}/users`,
-		route: userRoute,
-	},
-	{
 		path: `/${base_path}/tasks`,
 		route: taskRoute,
 	},
 ];
 
-app.use(cors());
-
 app.use(express.json());
+
+app.use(
+	cors({
+		origin: "http://localhost:5173",
+		methods: ["GET", "POST", "PUT", "DELETE"],
+		allowedHeaders: ["Authorization", "Content-Type"],
+	}),
+);
 
 app.get("/", (req: Request, res: Response) => {
 	res.send("Hello World!");

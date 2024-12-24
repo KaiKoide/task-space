@@ -13,6 +13,7 @@ import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 import { Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import { useUser } from "@clerk/clerk-react";
 
 import { Button } from "@/components/ui/button";
 import Column from "@/components/ui/column";
@@ -30,10 +31,20 @@ function Board() {
 	const [activeTask, setActiveTask] = useState<ITask | null>(null);
 	const [open, setOpen] = useState(false);
 
+	const { user } = useUser();
+
 	useEffect(() => {
-		fetchTasks();
-		fetchStatus();
-		fetchGroups();
+		if (!user) {
+			console.error("User is not authenticated.");
+			alert("Error: User is not authenticated. Please log in.");
+			return;
+		}
+
+		const userId = user.id;
+
+		fetchTasks(userId);
+		fetchStatus(userId);
+		fetchGroups(userId);
 	}, []);
 
 	const groupedTasks = tasks.reduce((acc: Record<string, ITask[]>, task) => {
@@ -99,7 +110,7 @@ function Board() {
 		}
 	}
 
-	function handleDragOver(event: DragOverEvent) {
+	async function handleDragOver(event: DragOverEvent) {
 		const { active, over } = event;
 		if (!over) return;
 
@@ -114,38 +125,72 @@ function Board() {
 		if (!isActiveTask) return;
 
 		if (isActiveTask && isOverTask) {
-			// Drop a task over another task
-			setTasks((tasks) => {
-				const activeIndex = tasks.findIndex((task) => task.id === activeId);
-				if (activeIndex === -1) return tasks;
-				const overIndex = tasks.findIndex((task) => task.id === overId);
+			try {
+				const response = await fetch(
+					`http://localhost:3000/api/v1/tasks/${activeId}`,
+					{
+						method: "PUT",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({
+							statusId: over.data.current?.statusData.id,
+						}),
+					},
+				);
 
-				const updatedTasks = [...tasks];
-				updatedTasks[activeIndex] = {
-					...updatedTasks[activeIndex],
-					statusId: tasks[overIndex].statusId,
-				};
+				if (!response.ok) throw new Error("Failed to update the task");
 
-				return arrayMove(updatedTasks, activeIndex, overIndex);
-			});
+				// Drop a task over another task
+				setTasks((tasks) => {
+					const activeIndex = tasks.findIndex((task) => task.id === activeId);
+					if (activeIndex === -1) return tasks;
+					const overIndex = tasks.findIndex((task) => task.id === overId);
+
+					const updatedTasks = [...tasks];
+					updatedTasks[activeIndex] = {
+						...updatedTasks[activeIndex],
+						statusId: tasks[overIndex].statusId,
+					};
+
+					return arrayMove(updatedTasks, activeIndex, overIndex);
+				});
+			} catch (error) {
+				console.error("Error updating the task to server", error);
+			}
 		}
 
 		// Drop a task over a column
 		const isOverColumn = over.data.current?.type === "Column";
 
 		if (isActiveTask && isOverColumn) {
-			setTasks((tasks) => {
-				const activeIndex = tasks.findIndex((task) => task.id === activeId);
-				if (activeIndex === -1) return tasks;
+			try {
+				const response = await fetch(
+					`http://localhost:3000/api/v1/tasks/${activeId}`,
+					{
+						method: "PUT",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({
+							statusId: over.data.current?.statusData.id,
+						}),
+					},
+				);
 
-				const updatedTasks = [...tasks];
-				updatedTasks[activeIndex] = {
-					...updatedTasks[activeIndex],
-					statusId: over.data.current?.statusData.id,
-				};
+				if (!response.ok) throw new Error("Failed to update the task");
 
-				return arrayMove(updatedTasks, activeIndex, activeIndex);
-			});
+				setTasks((tasks) => {
+					const activeIndex = tasks.findIndex((task) => task.id === activeId);
+					if (activeIndex === -1) return tasks;
+
+					const updatedTasks = [...tasks];
+					updatedTasks[activeIndex] = {
+						...updatedTasks[activeIndex],
+						statusId: over.data.current?.statusData.id,
+					};
+
+					return arrayMove(updatedTasks, activeIndex, activeIndex);
+				});
+			} catch (error) {
+				console.error("Error updating the task to server", error);
+			}
 		}
 	}
 

@@ -2,6 +2,7 @@ import { format } from "date-fns";
 import { Check, CirclePlus, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { useUser } from "@clerk/clerk-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -42,10 +43,20 @@ function List() {
 	const [open, setOpen] = useState(false);
 	const [newStatusName, setNewStatusName] = useState("");
 
+	const { user } = useUser();
+
 	useEffect(() => {
-		fetchStatus();
-		fetchTasks();
-		fetchGroups();
+		if (!user) {
+			console.error("User is not authenticated.");
+			alert("Error: User is not authenticated. Please log in.");
+			return;
+		}
+
+		const userId = user.id;
+
+		fetchStatus(userId);
+		fetchTasks(userId);
+		fetchGroups(userId);
 	}, []);
 
 	const groupedTasks = tasks.reduce((acc: Record<string, ITask[]>, task) => {
@@ -137,7 +148,7 @@ function List() {
 										{task.title}
 									</PopoverMenu>
 								</TableCell>
-								<TableCell className="capitalize border-x border-custom-default/30">
+								<TableCell className="capitalize border-x text-center border-custom-default/30">
 									<Popover
 										open={openState[task.id] || false}
 										onOpenChange={(isOpen) => handleOpenChange(task.id, isOpen)}
@@ -202,7 +213,7 @@ function List() {
 										</PopoverContent>
 									</Popover>
 								</TableCell>
-								<TableCell className="border-r border-custom-default/30">
+								<TableCell className="border-r text-center border-custom-default/30">
 									{format(task.dueDate, "yyyy-MM-dd")}
 								</TableCell>
 								<TableCell className="text-right max-w-52">

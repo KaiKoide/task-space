@@ -8,7 +8,7 @@ interface TaskState {
 	addTask: (newTasks: ITask) => void;
 	deleteTask: (id: string) => void;
 	updateTask: (taskId: string, updatedTask: Partial<ITask>) => void;
-	fetchTasks: () => void;
+	fetchTasks: (userId: string) => void;
 }
 
 interface GroupState {
@@ -16,7 +16,7 @@ interface GroupState {
 	addGroup: (newGroup: IGroup) => void;
 	deleteGroup: (groupId: string) => void;
 	updateGroup: (groupId: string, updatedGroup: string) => void;
-	fetchGroups: () => void;
+	fetchGroups: (userId: string) => void;
 	addGroupToServer: (group: IGroup) => void;
 }
 
@@ -28,7 +28,7 @@ interface StatusState {
 	addStatus: (newStatus: IStatus) => void;
 	deleteStatus: (statusId: string) => void;
 	updateStatus: (statusId: string, updatedStatus: string) => void;
-	fetchStatus: () => void;
+	fetchStatus: (userId: string) => void;
 	addStatusToServer: (status: IStatus) => void;
 }
 
@@ -50,9 +50,9 @@ const useTaskStore = create<TaskState>((set) => ({
 				task.id === taskId ? { ...task, ...updatedTask } : task,
 			),
 		})),
-	fetchTasks: async () => {
+	fetchTasks: async (userId: string) => {
 		try {
-			const res = await fetch("http://localhost:3000/api/v1/tasks");
+			const res = await fetch(`http://localhost:3000/api/v1/tasks/${userId}`);
 			const data: ITask[] = await res.json();
 			set({ tasks: data });
 			set({});
@@ -76,9 +76,9 @@ const useGroupStore = create<GroupState>((set) => ({
 				group.id === groupId ? { ...group, name: updatedGroup } : group,
 			),
 		})),
-	fetchGroups: async () => {
+	fetchGroups: async (userId: string) => {
 		try {
-			const res = await fetch("http://localhost:3000/api/v1/groups");
+			const res = await fetch(`http://localhost:3000/api/v1/groups/${userId}`);
 			const data: IGroup[] = await res.json();
 			set({ groups: data });
 		} catch (error) {
@@ -125,9 +125,11 @@ const useStatusStore = create<StatusState>((set) => ({
 				status.id === statusId ? { ...status, status: updatedStatus } : status,
 			),
 		})),
-	fetchStatus: async () => {
+	fetchStatus: async (userId: string) => {
 		try {
-			const res = await fetch("http://localhost:3000/api/v1/statuses");
+			const res = await fetch(
+				`http://localhost:3000/api/v1/statuses/${userId}`,
+			);
 			const data: IStatus[] = await res.json();
 			set({ statuses: data });
 		} catch (error) {

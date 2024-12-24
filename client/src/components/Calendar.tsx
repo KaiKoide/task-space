@@ -12,7 +12,7 @@ function Calendar() {
 			initialView="dayGridMonth"
 			events={tasks.map((task) => ({
 				title: task.title,
-				date: task.due_date,
+				date: task.dueDate,
 			}))}
 			headerToolbar={{
 				left: "prev,next today",

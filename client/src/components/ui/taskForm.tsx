@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
+import { useUser } from "@clerk/clerk-react";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -66,9 +67,19 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 	const { groups, addGroupToServer } = useGroupStore();
 	const { statuses, fetchStatus } = useStatusStore();
 
+	const { user } = useUser();
+
 	useEffect(() => {
-		fetchStatus();
-		fetchTasks();
+		if (!user) {
+			console.error("User is not authenticated.");
+			alert("Error: User is not authenticated. Please log in.");
+			return;
+		}
+
+		const userId = user.id;
+
+		fetchStatus(userId);
+		fetchTasks(userId);
 	}, []);
 
 	const groupName = groups.find((group) => group.id === task?.groupId)?.name;
@@ -84,6 +95,12 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 	});
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
+		if (!user) {
+			console.error("User is not authenticated.");
+			alert("Error: User is not authenticated. Please log in.");
+			return;
+		}
+
 		const newTask = {
 			id: task?.id || uuidv4().toString(),
 			title: values.title,
@@ -96,7 +113,7 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 			statusId:
 				task?.statusId ||
 				(statuses.find((status) => status.status === "todo")?.id as string),
-			createdBy: task?.createdBy || "c2bab88c-04c3-4fa4-adb4-ede83b64193e",
+			createdBy: task?.createdBy || user.id,
 		};
 
 		if (task) {
@@ -135,10 +152,17 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 	}
 
 	async function handleAddGroup() {
+		if (!user) {
+			console.error("User is not authenticated.");
+			alert("Error: User is not authenticated. Please log in.");
+			return;
+		}
+
 		const newGroup = {
 			id: uuidv4().toString(),
 			name: newGroupName.trim(),
 			createdAt: new Date().toISOString(),
+			createdBy: user.id,
 		};
 
 		await addGroupToServer(newGroup);
