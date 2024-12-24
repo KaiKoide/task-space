@@ -7,11 +7,27 @@ export const getStatuses = async (req: Request, res: Response) => {
 	try {
 		const { userId } = req.params;
 
-		const statuses = await prisma.status.findMany({
-			where: {
-				OR: [{ createdBy: userId }, { createdBy: null }],
-			},
+		let statuses = await prisma.status.findMany({
+			where: { createdBy: userId },
 		});
+
+		if (statuses.length === 0) {
+			const defaultStatus = await prisma.status.findMany({
+				where: { createdBy: null },
+			});
+
+			const userStatuses = defaultStatus.map((status) => ({
+				status: status.status,
+				createdBy: userId,
+			}));
+
+			await prisma.status.createMany({ data: userStatuses });
+
+			statuses = await prisma.status.findMany({
+				where: { createdBy: userId },
+			});
+		}
+
 		res.status(200).json(statuses);
 	} catch (error) {
 		res.status(500).json({ error: "Failed to fetch statuses" });
