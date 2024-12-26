@@ -1,7 +1,7 @@
 import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
 
 import TabsComponent from "./components/ui/tabs";
-import Top from "./components/top";
+import Top from "./components/Top";
 
 function App() {
 	return (
