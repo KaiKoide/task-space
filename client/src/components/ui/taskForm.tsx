@@ -152,6 +152,8 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 	}
 
 	async function handleAddGroup() {
+		if (newGroupName === "") return;
+
 		if (!user) {
 			console.error("User is not authenticated.");
 			alert("Error: User is not authenticated. Please log in.");
@@ -169,9 +171,7 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 	}
 
 	function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-		if (e.key === "Enter") {
-			handleAddGroup();
-		}
+		if (e.key === "Enter") handleAddGroup();
 	}
 
 	return (
