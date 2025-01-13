@@ -9,13 +9,15 @@ function Top() {
 				Organize your tasks efficiently with our app—switch seamlessly between
 				Kanban and list views, customize statuses, and stay on top of deadlines.
 			</p>
-			<div className="flex gap-10">
+			<SignInButton>
+				<Button size="lg" className="vibrate-1 ">
+					Sign In
+				</Button>
+			</SignInButton>
+			<div>
 				<img className="w-80 h-auto " src="/images/board.webp" alt="board" />
 				<img className="w-80 h-auto" src="/images/list.webp" alt="list" />
 			</div>
-			<SignInButton>
-				<Button className="vibrate-1">Sign In</Button>
-			</SignInButton>
 		</div>
 	);
 }
