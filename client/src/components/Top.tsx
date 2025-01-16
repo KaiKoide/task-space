@@ -3,7 +3,7 @@ import { Button } from "./ui/button";
 
 function Top() {
 	return (
-		<div className="flex items-center justify-center flex-col h-screen gap-5">
+		<div className="min-h-screen flex items-center justify-center flex-col gap-16">
 			<h1 className="lg:text-8xl">Task Space</h1>
 			<p className="lg:text-xl">
 				Organize your tasks efficiently with our app—switch seamlessly between
@@ -14,10 +14,9 @@ function Top() {
 					Sign In
 				</Button>
 			</SignInButton>
-			<div>
-				<img className="w-80 h-auto " src="/images/board.webp" alt="board" />
-				<img className="w-80 h-auto" src="/images/list.webp" alt="list" />
-			</div>
+
+			<img className="w-[600px] h-auto " src="/images/board.webp" alt="board" />
+			<img className="w-[600px] h-auto" src="/images/list.webp" alt="list" />
 		</div>
 	);
 }
