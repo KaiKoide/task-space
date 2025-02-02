@@ -56,6 +56,9 @@ const formSchema = z.object({
 	group: z.string({
 		required_error: "Please select a group.",
 	}),
+	status: z.string({
+		required_error: "Please select a status.",
+	}),
 	dueDate: z.date({
 		required_error: "Please select a due date.",
 	}),
@@ -63,9 +66,10 @@ const formSchema = z.object({
 
 function TaskForm({ onSave, task }: TaskFormProps) {
 	const [newGroupName, setNewGroupName] = useState("");
+	const [newStatus, setNewStatus] = useState("");
 	const { addTask, updateTask, fetchTasks } = useTaskStore();
 	const { groups, addGroupToServer } = useGroupStore();
-	const { statuses, fetchStatus } = useStatusStore();
+	const { statuses, fetchStatus, addStatusToServer } = useStatusStore();
 
 	const { user } = useUser();
 
@@ -83,6 +87,9 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 	}, []);
 
 	const groupName = groups.find((group) => group.id === task?.groupId)?.name;
+	const statusName = statuses.find(
+		(status) => status.id === task?.statusId,
+	)?.status;
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -90,6 +97,7 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 			title: task?.title || "",
 			description: task?.description || "",
 			group: task ? groupName : "",
+			status: task ? statusName : "",
 			dueDate: task?.dueDate ? new Date(task.dueDate) : undefined,
 		},
 	});
@@ -112,7 +120,8 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 			createdAt: task?.createdAt || new Date().toISOString(),
 			statusId:
 				task?.statusId ||
-				(statuses.find((status) => status.status === "todo")?.id as string),
+				(statuses.find((status) => status.status === values.status)
+					?.id as string),
 			createdBy: task?.createdBy || user.id,
 		};
 
@@ -151,7 +160,34 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 		onSave();
 	}
 
+	async function handleAddStatus() {
+		if (newStatus === "") return;
+
+		if (!user) {
+			console.error("User is not authenticated.");
+			alert("Error: User is not authenticated. Please log in.");
+			return;
+		}
+
+		const status = {
+			id: uuidv4().toString(),
+			status: newStatus.trim(),
+			createdBy: user.id,
+		};
+
+		try {
+			await addStatusToServer(status);
+			// Fetch the latest data from the server
+			await fetchStatus(user.id);
+			setNewStatus("");
+		} catch (error) {
+			console.error("Error adding status to server", error);
+		}
+	}
+
 	async function handleAddGroup() {
+		if (newGroupName === "") return;
+
 		if (!user) {
 			console.error("User is not authenticated.");
 			alert("Error: User is not authenticated. Please log in.");
@@ -165,12 +201,21 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 			createdBy: user.id,
 		};
 
-		await addGroupToServer(newGroup);
+		try {
+			await addGroupToServer(newGroup);
+			// Fetch the latest data from the server
+			await fetchStatus(user.id);
+			setNewGroupName("");
+		} catch (error) {
+			console.error("Error adding group to server", error);
+		}
 	}
 
 	function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-		if (e.key === "Enter") {
+		if (e.key === "Enter" && !newGroupName) {
 			handleAddGroup();
+		} else if (e.key === "Enter" && !newStatus) {
+			handleAddStatus();
 		}
 	}
 
@@ -196,7 +241,7 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 					render={({ field }) => (
 						<FormItem className="flex flex-col">
 							<FormLabel>Group</FormLabel>
-							<Popover>
+							<Popover onOpenChange={(open) => !open && setNewGroupName("")}>
 								<PopoverTrigger asChild>
 									<FormControl>
 										<Button
@@ -247,6 +292,79 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 															className={cn(
 																"ml-auto",
 																group.name === field.value
+																	? "opacity-100"
+																	: "opacity-0",
+															)}
+														/>
+													</CommandItem>
+												))}
+											</CommandGroup>
+										</CommandList>
+									</Command>
+								</PopoverContent>
+							</Popover>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="status"
+					render={({ field }) => (
+						<FormItem className="flex flex-col">
+							<FormLabel>Status</FormLabel>
+							<Popover onOpenChange={(open) => !open && setNewStatus("")}>
+								<PopoverTrigger asChild>
+									<FormControl>
+										<Button
+											variant="outline"
+											// biome-ignore lint/a11y/useSemanticElements: <explanation>
+											role="combobox"
+											className={cn(
+												"w-[200px] justify-between rounded-md px-3 font-normal",
+												!(field.value || task?.statusId) &&
+													"text-muted-foreground",
+											)}
+										>
+											{field.value
+												? statuses.find(
+														(status) => status.status === field.value,
+													)?.status
+												: task?.statusId
+													? statusName
+													: "Select status"}
+											<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+										</Button>
+									</FormControl>
+								</PopoverTrigger>
+								<PopoverContent className="w-[200px] p-0 pointer-events-auto">
+									<Command>
+										<CommandInput
+											placeholder="Search status..."
+											onInput={(e) => setNewStatus(e.currentTarget.value)}
+											onKeyDown={(e) => handleKeyDown(e)}
+										/>
+										<CommandList>
+											<CommandEmpty onClick={handleAddStatus}>
+												<div className="flex items-center justify-center gap-1 text-custom-default">
+													<CirclePlus strokeWidth={1.5} className="font-bold" />
+													Add new status
+												</div>
+											</CommandEmpty>
+											<CommandGroup>
+												{statuses.map((status) => (
+													<CommandItem
+														value={status.status}
+														key={status.id}
+														onSelect={() => {
+															form.setValue("status", status.status);
+														}}
+													>
+														{status.status}
+														<Check
+															className={cn(
+																"ml-auto",
+																status.status === field.value
 																	? "opacity-100"
 																	: "opacity-0",
 															)}
