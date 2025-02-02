@@ -14,7 +14,7 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
-        "custom-default": "#9F1C92",
+        "custom-default": "#6d488d",
         "custom-start": "#FEDDFF",
         "custom-end": "#FFF8D3",
         "custom-card": "#E2EFE8",
