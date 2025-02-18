@@ -34,6 +34,7 @@ body {
 	min-width: 100vw;
 	/* min-width: 320px; */
 	min-height: 100vh;
+	height: fit-content;
 	font-family: "Roboto", sans-serif;
 }
 
