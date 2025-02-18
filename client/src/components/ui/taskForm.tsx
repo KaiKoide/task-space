@@ -397,7 +397,7 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 											)}
 										>
 											{field.value
-												? format(field.value, "yyyy-MM-dd")
+												? format(field.value, "yyyy/MM/dd")
 												: task?.dueDate || <span>Pick a date</span>}
 											<CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
 										</Button>

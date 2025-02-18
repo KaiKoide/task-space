@@ -214,11 +214,9 @@ function List() {
 									</Popover>
 								</TableCell>
 								<TableCell className="border-r text-center border-custom-default/30">
-									{format(task.dueDate, "yyyy-MM-dd")}
+									{format(task.dueDate, "yyyy/MM/dd")}
 								</TableCell>
-								<TableCell className="text-right max-w-52">
-									{task.description}
-								</TableCell>
+								<TableCell className="max-w-52">{task.description}</TableCell>
 							</TableRow>
 						))}
 					</>

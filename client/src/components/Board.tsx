@@ -202,7 +202,7 @@ function Board() {
 			onDragStart={handleDragStart}
 			onDragOver={handleDragOver}
 		>
-			<div className="flex justify-evenly gap-4 p-4">
+			<div className="flex justify-evenly gap-4 p-4 min-h-screen">
 				<SortableContext items={columnsId}>
 					{statuses.map((status) => (
 						<Column
