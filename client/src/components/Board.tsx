@@ -13,7 +13,7 @@ import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 import { Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import BarLoader from "react-spinners/ClipLoader";
+import ClockLoader from "react-spinners/ClockLoader";
 import { useUser } from "@clerk/clerk-react";
 
 import { Button } from "@/components/ui/button";
@@ -260,7 +260,7 @@ function Board() {
 		</DndContext>
 	) : (
 		<div className="flex justify-center items-center min-h-screen">
-			<BarLoader />
+			<ClockLoader color="#6d488d" size={80} />
 		</div>
 	);
 }
