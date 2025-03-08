@@ -101,9 +101,16 @@ function List() {
 	}
 
 	async function handleAddStatus() {
+		if (!user) {
+			console.error("User is not authenticated.");
+			alert("Error: User is not authenticated. Please log in.");
+			return;
+		}
+
 		const newStatus = {
 			id: uuidv4().toString(),
 			status: newStatusName.trim(),
+			createdBy: user.id,
 		};
 		await addStatusToServer(newStatus);
 		setNewStatusName("");
