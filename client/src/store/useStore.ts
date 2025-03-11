@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 import type { ITask, IGroup, IStatus } from "@/types/data";
+import { toast } from "sonner";
 
 interface TaskState {
 	tasks: ITask[];
@@ -55,7 +56,6 @@ const useTaskStore = create<TaskState>((set) => ({
 			const res = await fetch(`http://localhost:3000/api/v1/tasks/${userId}`);
 			const data: ITask[] = await res.json();
 			set({ tasks: data });
-			set({});
 		} catch (error) {
 			console.error("Failed to fetch tasks", error);
 		}
@@ -86,21 +86,26 @@ const useGroupStore = create<GroupState>((set) => ({
 		}
 	},
 	addGroupToServer: async (group: IGroup) => {
-		try {
-			const response = await fetch("http://localhost:3000/api/v1/groups", {
+		return toast.promise(
+			fetch("http://localhost:3000/api/v1/groups", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify(group),
-			});
+			}).then(async (response) => {
+				if (!response.ok) throw new Error("Failed to add group");
 
-			if (!response.ok) throw new Error("Failed to add group");
+				set((state) => ({ groups: [...state.groups, group] }));
 
-			set((state) => ({ groups: [...state.groups, group] }));
-		} catch (error) {
-			console.error("Error adding group to server", error);
-		}
+				return group;
+			}),
+			{
+				loading: "Adding group...",
+				success: "New group has been created!",
+				error: "Failed to add group",
+			},
+		);
 	},
 }));
 
