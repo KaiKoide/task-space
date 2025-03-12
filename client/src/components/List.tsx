@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import { Check, CirclePlus, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 import { useUser } from "@clerk/clerk-react";
 
@@ -76,27 +77,27 @@ function List() {
 		const status = statuses.find((status) => status.id === newValueId)?.status;
 
 		if (status) {
-			try {
-				const response = await fetch(
-					`http://localhost:3000/api/v1/tasks/${taskId}`,
-					{
-						method: "PUT",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({ statusId: newValueId }),
-					},
-				);
+			toast.promise(
+				fetch(`http://localhost:3000/api/v1/tasks/${taskId}`, {
+					method: "PUT",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ statusId: newValueId }),
+				}).then((response) => {
+					if (!response.ok) throw new Error("Failed to update the task");
 
-				if (!response.ok) throw new Error("Failed to update the task");
-
-				setValue((prev) => ({
-					...prev,
-					[taskId]: status,
-				}));
-				setOpenState((prev) => ({ ...prev, [taskId]: false }));
-				updateTask(taskId, { statusId: newValueId });
-			} catch (error) {
-				console.error("Error updating the task to server", error);
-			}
+					setValue((prev) => ({
+						...prev,
+						[taskId]: status,
+					}));
+					setOpenState((prev) => ({ ...prev, [taskId]: false }));
+					updateTask(taskId, { statusId: newValueId });
+				}),
+				{
+					loading: "Updating task...",
+					success: "Task has been updated ;)",
+					error: "Failed to updated task :(",
+				},
+			);
 		}
 	}
 

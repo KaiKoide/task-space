@@ -127,22 +127,22 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 		};
 
 		if (task) {
-			try {
-				const response = await fetch(
-					`http://localhost:3000/api/v1/tasks/${task.id}`,
-					{
-						method: "PUT",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify(newTask),
-					},
-				);
+			toast.promise(
+				fetch(`http://localhost:3000/api/v1/tasks/${task.id}`, {
+					method: "PUT",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(newTask),
+				}).then((response) => {
+					if (!response.ok) throw new Error("Failed to update the task");
 
-				if (!response.ok) throw new Error("Failed to update the task");
-
-				updateTask(task.id, newTask);
-			} catch (error) {
-				console.error("Error updating the task to server", error);
-			}
+					updateTask(task.id, newTask);
+				}),
+				{
+					loading: "Updating task...",
+					success: "Task has been updated ;)",
+					error: "Failed to updated task :(",
+				},
+			);
 		} else {
 			toast.promise(
 				fetch("http://localhost:3000/api/v1/tasks", {
