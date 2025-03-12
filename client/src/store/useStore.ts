@@ -86,7 +86,7 @@ const useGroupStore = create<GroupState>((set) => ({
 		}
 	},
 	addGroupToServer: async (group: IGroup) => {
-		return toast.promise(
+		toast.promise(
 			fetch("http://localhost:3000/api/v1/groups", {
 				method: "POST",
 				headers: {
@@ -102,8 +102,8 @@ const useGroupStore = create<GroupState>((set) => ({
 			}),
 			{
 				loading: "Adding group...",
-				success: "New group has been created!",
-				error: "Failed to add group",
+				success: "New group has been created ;)",
+				error: "Failed to add group :(",
 			},
 		);
 	},
@@ -142,21 +142,24 @@ const useStatusStore = create<StatusState>((set) => ({
 		}
 	},
 	addStatusToServer: async (status: IStatus) => {
-		try {
-			const response = await fetch("http://localhost:3000/api/v1/statuses", {
+		toast.promise(
+			fetch("http://localhost:3000/api/v1/statuses", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify(status),
-			});
+			}).then(async (response) => {
+				if (!response.ok) throw new Error("Failed to adding status");
 
-			if (!response.ok) throw new Error("Failed to add the status");
-
-			set((state) => ({ statuses: [...state.statuses, status] }));
-		} catch (error) {
-			console.error("Error adding status to server", error);
-		}
+				set((state) => ({ statuses: [...state.statuses, status] }));
+			}),
+			{
+				loading: "Loading...",
+				success: "New status has been created ;)",
+				error: "Failed to add status :(",
+			},
+		);
 	},
 }));
 

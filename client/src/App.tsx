@@ -2,6 +2,7 @@ import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
 
 import TabsComponent from "./components/ui/tabs";
 import Top from "./components/Top";
+import { Toaster } from "sonner";
 
 function App() {
 	return (
@@ -16,6 +17,7 @@ function App() {
 				<div style={{ padding: "20px" }}>
 					<UserButton />
 					<TabsComponent />
+					<Toaster richColors />
 				</div>
 			</SignedIn>
 		</>

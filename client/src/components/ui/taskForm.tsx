@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { useUser } from "@clerk/clerk-react";
@@ -143,19 +144,22 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 				console.error("Error updating the task to server", error);
 			}
 		} else {
-			try {
-				const response = await fetch("http://localhost:3000/api/v1/tasks", {
+			toast.promise(
+				fetch("http://localhost:3000/api/v1/tasks", {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify(newTask),
-				});
+				}).then((response) => {
+					if (!response.ok) throw new Error("Failed to add the task");
 
-				if (!response.ok) throw new Error("Failed to add the task");
-
-				addTask(newTask);
-			} catch (error) {
-				console.error("Error adding task to server", error);
-			}
+					addTask(newTask);
+				}),
+				{
+					loading: "Loading...",
+					success: "New task has been created ;)",
+					error: "Failed to add group :(",
+				},
+			);
 		}
 		onSave();
 	}
