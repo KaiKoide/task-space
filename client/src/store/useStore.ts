@@ -14,7 +14,6 @@ interface TaskState {
 
 interface GroupState {
 	groups: IGroup[];
-	addGroup: (newGroup: IGroup) => void;
 	deleteGroup: (groupId: string) => void;
 	updateGroup: (groupId: string, updatedGroup: string) => void;
 	fetchGroups: (userId: string) => void;
@@ -26,7 +25,6 @@ interface StatusState {
 	setStatus: (
 		updater: ((statuses: IStatus[]) => IStatus[]) | IStatus[],
 	) => void;
-	addStatus: (newStatus: IStatus) => void;
 	deleteStatus: (statusId: string) => void;
 	updateStatus: (statusId: string, updatedStatus: string) => void;
 	fetchStatus: (userId: string) => void;
@@ -64,8 +62,6 @@ const useTaskStore = create<TaskState>((set) => ({
 
 const useGroupStore = create<GroupState>((set) => ({
 	groups: [],
-	addGroup: (newGroup: IGroup) =>
-		set((state) => ({ groups: [...state.groups, newGroup] })),
 	deleteGroup: (groupId: string) =>
 		set((state) => ({
 			groups: state.groups.filter((group) => group.id !== groupId),
@@ -115,10 +111,6 @@ const useStatusStore = create<StatusState>((set) => ({
 		set((state) => ({
 			statuses:
 				typeof updater === "function" ? updater(state.statuses) : updater,
-		})),
-	addStatus: (newStatus: IStatus) =>
-		set((state) => ({
-			statuses: [...state.statuses, newStatus],
 		})),
 	deleteStatus: (deleteId: string) =>
 		set((state) => ({
