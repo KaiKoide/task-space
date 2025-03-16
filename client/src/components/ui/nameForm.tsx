@@ -1,6 +1,7 @@
 import { Cookie } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { useUser } from "@clerk/clerk-react";
@@ -66,43 +67,44 @@ function NameForm({ onSave, data, type, isEdit = false }: NameFormProps) {
 
 		if (isEdit && data) {
 			if ("name" in data) {
-				try {
-					const { name } = values;
+				const { name } = values;
 
-					const response = await fetch(
-						`http://localhost:3000/api/v1/groups/${data.id}`,
-						{
-							method: "PUT",
-							headers: {
-								"Content-Type": "application/json",
-							},
-							body: JSON.stringify({ name }),
+				toast.promise(
+					fetch(`http://localhost:3000/api/v1/groups/${data.id}`, {
+						method: "PUT",
+						headers: {
+							"Content-Type": "application/json",
 						},
-					);
+						body: JSON.stringify({ name }),
+					}).then((response) => {
+						if (!response.ok) throw new Error("Failed to update group name");
 
-					if (!response.ok) throw new Error("Failed to update the group");
-
-					updateGroup(data.id, name);
-				} catch (error) {
-					console.error("Error updating the group", error);
-				}
+						updateGroup(data.id, name);
+					}),
+					{
+						loading: "Updating group name...",
+						success: "Group name has been updated ;)",
+						error: "Failed to updated group name :(",
+					},
+				);
 			} else {
-				try {
-					const response = await fetch(
-						`http://localhost:3000/api/v1/statuses/${data.id}`,
-						{
-							method: "PUT",
-							headers: { "Content-Type": "application/json" },
-							body: JSON.stringify({ status: values.name }),
-						},
-					);
+				toast.promise(
+					fetch(`http://localhost:3000/api/v1/statuses/${data.id}`, {
+						method: "PUT",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ status: values.name }),
+					}).then((response) => {
+						if (!response.ok)
+							throw new Error("Failed to update the status name");
 
-					if (!response.ok) throw new Error("Failed to update the status");
-
-					updateStatus(data.id, values.name);
-				} catch (error) {
-					console.error("Error updating the status to server", error);
-				}
+						updateStatus(data.id, values.name);
+					}),
+					{
+						loading: "Updating status name...",
+						success: "Status name has been updated ;)",
+						error: "Failed to updated status name :(",
+					},
+				);
 			}
 		} else {
 			if (type === "status") {

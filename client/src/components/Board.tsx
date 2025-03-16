@@ -13,6 +13,7 @@ import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 import { Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import ClockLoader from "react-spinners/ClockLoader";
 import { useUser } from "@clerk/clerk-react";
 
 import { Button } from "@/components/ui/button";
@@ -30,10 +31,12 @@ function Board() {
 	const [activeColumn, setActiveColumn] = useState<IStatus | null>(null);
 	const [activeTask, setActiveTask] = useState<ITask | null>(null);
 	const [open, setOpen] = useState(false);
+	const [loading, setLoading] = useState(false);
 
 	const { user } = useUser();
 
 	useEffect(() => {
+		setLoading(true);
 		if (!user) {
 			console.error("User is not authenticated.");
 			alert("Error: User is not authenticated. Please log in.");
@@ -45,6 +48,15 @@ function Board() {
 		fetchTasks(userId);
 		fetchStatus(userId);
 		fetchGroups(userId);
+
+		Promise.all([fetchTasks(userId), fetchStatus(userId), fetchGroups(userId)])
+			.then(() => {
+				setLoading(false);
+			})
+			.catch((error: Error) => {
+				console.error("Error fetching data:", error);
+				setLoading(false);
+			});
 	}, []);
 
 	const groupedTasks = tasks.reduce((acc: Record<string, ITask[]>, task) => {
@@ -194,7 +206,7 @@ function Board() {
 		}
 	}
 
-	return (
+	return !loading ? (
 		<DndContext
 			sensors={sensors}
 			collisionDetection={closestCorners}
@@ -246,6 +258,10 @@ function Board() {
 				document.body,
 			)}
 		</DndContext>
+	) : (
+		<div className="flex justify-center items-center min-h-screen">
+			<ClockLoader color="#6d488d" size={80} />
+		</div>
 	);
 }
 

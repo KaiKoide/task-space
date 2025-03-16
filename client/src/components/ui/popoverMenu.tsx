@@ -1,5 +1,6 @@
 import { Ellipsis, Trash2, NotebookPen, Ghost } from "lucide-react";
 import { useState, type ReactNode } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -40,20 +41,20 @@ function PopoverMenu({ type, data, children }: PopoverMenuProps) {
 		if (type === "task") {
 			switch (option) {
 				case "delete":
-					try {
-						const response = await fetch(
-							`http://localhost:3000/api/v1/tasks/${data.id}`,
-							{
-								method: "DELETE",
-							},
-						);
+					toast.promise(
+						fetch(`http://localhost:3000/api/v1/tasks/${data.id}`, {
+							method: "DELETE",
+						}).then((response) => {
+							if (!response.ok) throw new Error("Failed to delete the task");
 
-						if (!response.ok) throw new Error("Failed to delete the task");
-
-						deleteTask(data.id);
-					} catch (error) {
-						console.error("Error deleting the task", error);
-					}
+							deleteTask(data.id);
+						}),
+						{
+							loading: "Deleting task...",
+							success: "Task has been deleted ;)",
+							error: "Failed to deleting task :(",
+						},
+					);
 					break;
 				case "edit":
 					setOpen(true);
@@ -62,6 +63,24 @@ function PopoverMenu({ type, data, children }: PopoverMenuProps) {
 		} else if (type === "list") {
 			switch (option) {
 				case "delete":
+					toast.promise(
+						fetch(`http://localhost:3000/api/v1/groups/${data.id}`, {
+							method: "DELETE",
+						}).then((response) => {
+							if (!response.ok) throw new Error("Failed to delete the group");
+
+							deleteGroup(data.id);
+							setTasks((prevTasks) =>
+								prevTasks.filter((task) => task.groupId !== data.id),
+							);
+						}),
+						{
+							loading: "Deleting group...",
+							success: "Group has been deleted ;)",
+							error: "Failed to deleting group :(",
+						},
+					);
+
 					try {
 						const response = await fetch(
 							`http://localhost:3000/api/v1/groups/${data.id}`,
@@ -86,23 +105,23 @@ function PopoverMenu({ type, data, children }: PopoverMenuProps) {
 		} else if (type === "column") {
 			switch (option) {
 				case "delete":
-					try {
-						const response = await fetch(
-							`http://localhost:3000/api/v1/statuses/${data.id}`,
-							{
-								method: "DELETE",
-							},
-						);
+					toast.promise(
+						fetch(`http://localhost:3000/api/v1/statuses/${data.id}`, {
+							method: "DELETE",
+						}).then((response) => {
+							if (!response.ok) throw new Error("Failed to delete status");
 
-						if (!response.ok) throw new Error("Failed to delete the status");
-
-						deleteStatus(data.id);
-						setTasks((prevTasks) =>
-							prevTasks.filter((task) => task.statusId !== data.id),
-						);
-					} catch (error) {
-						console.error("Error deleting the group", error);
-					}
+							deleteStatus(data.id);
+							setTasks((prevTasks) =>
+								prevTasks.filter((task) => task.statusId !== data.id),
+							);
+						}),
+						{
+							loading: "Deleting status...",
+							success: "Status has been deleted ;)",
+							error: "Failed to deleting status :(",
+						},
+					);
 					break;
 				case "edit":
 					setIsEditName(true);
