@@ -37,12 +37,14 @@ function PopoverMenu({ type, data, children }: PopoverMenuProps) {
 	const [open, setOpen] = useState(false);
 	const [isEditName, setIsEditName] = useState(false);
 
+	const apiUrl = import.meta.env.VITE_API_URL;
+
 	async function handleClickOption(option: string) {
 		if (type === "task") {
 			switch (option) {
 				case "delete":
 					toast.promise(
-						fetch(`http://localhost:3000/api/v1/tasks/${data.id}`, {
+						fetch(`${apiUrl}/api/v1/tasks/${data.id}`, {
 							method: "DELETE",
 						}).then((response) => {
 							if (!response.ok) throw new Error("Failed to delete the task");
@@ -64,7 +66,7 @@ function PopoverMenu({ type, data, children }: PopoverMenuProps) {
 			switch (option) {
 				case "delete":
 					toast.promise(
-						fetch(`http://localhost:3000/api/v1/groups/${data.id}`, {
+						fetch(`${apiUrl}/api/v1/groups/${data.id}`, {
 							method: "DELETE",
 						}).then((response) => {
 							if (!response.ok) throw new Error("Failed to delete the group");
@@ -82,10 +84,9 @@ function PopoverMenu({ type, data, children }: PopoverMenuProps) {
 					);
 
 					try {
-						const response = await fetch(
-							`http://localhost:3000/api/v1/groups/${data.id}`,
-							{ method: "DELETE" },
-						);
+						const response = await fetch(`${apiUrl}/api/v1/groups/${data.id}`, {
+							method: "DELETE",
+						});
 
 						if (!response.ok) throw new Error("Failed to delete the group");
 
@@ -106,7 +107,7 @@ function PopoverMenu({ type, data, children }: PopoverMenuProps) {
 			switch (option) {
 				case "delete":
 					toast.promise(
-						fetch(`http://localhost:3000/api/v1/statuses/${data.id}`, {
+						fetch(`${apiUrl}/api/v1/statuses/${data.id}`, {
 							method: "DELETE",
 						}).then((response) => {
 							if (!response.ok) throw new Error("Failed to delete status");

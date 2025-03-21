@@ -35,6 +35,8 @@ function Board() {
 
 	const { user } = useUser();
 
+	const apiUrl = import.meta.env.VITE_API_URL;
+
 	useEffect(() => {
 		setLoading(true);
 		if (!user) {
@@ -138,16 +140,13 @@ function Board() {
 
 		if (isActiveTask && isOverTask) {
 			try {
-				const response = await fetch(
-					`http://localhost:3000/api/v1/tasks/${activeId}`,
-					{
-						method: "PUT",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({
-							statusId: over.data.current?.statusData.id,
-						}),
-					},
-				);
+				const response = await fetch(`${apiUrl}/api/v1/tasks/${activeId}`, {
+					method: "PUT",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						statusId: over.data.current?.statusData.id,
+					}),
+				});
 
 				if (!response.ok) throw new Error("Failed to update the task");
 
@@ -175,16 +174,13 @@ function Board() {
 
 		if (isActiveTask && isOverColumn) {
 			try {
-				const response = await fetch(
-					`http://localhost:3000/api/v1/tasks/${activeId}`,
-					{
-						method: "PUT",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({
-							statusId: over.data.current?.statusData.id,
-						}),
-					},
-				);
+				const response = await fetch(`${apiUrl}/api/v1/tasks/${activeId}`, {
+					method: "PUT",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						statusId: over.data.current?.statusData.id,
+					}),
+				});
 
 				if (!response.ok) throw new Error("Failed to update the task");
 
