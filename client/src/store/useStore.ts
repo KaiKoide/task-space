@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 import type { ITask, IGroup, IStatus } from "@/types/data";
+import { toast } from "sonner";
 
 interface TaskState {
 	tasks: ITask[];
@@ -13,7 +14,6 @@ interface TaskState {
 
 interface GroupState {
 	groups: IGroup[];
-	addGroup: (newGroup: IGroup) => void;
 	deleteGroup: (groupId: string) => void;
 	updateGroup: (groupId: string, updatedGroup: string) => void;
 	fetchGroups: (userId: string) => void;
@@ -25,7 +25,6 @@ interface StatusState {
 	setStatus: (
 		updater: ((statuses: IStatus[]) => IStatus[]) | IStatus[],
 	) => void;
-	addStatus: (newStatus: IStatus) => void;
 	deleteStatus: (statusId: string) => void;
 	updateStatus: (statusId: string, updatedStatus: string) => void;
 	fetchStatus: (userId: string) => void;
@@ -55,7 +54,6 @@ const useTaskStore = create<TaskState>((set) => ({
 			const res = await fetch(`http://localhost:3000/api/v1/tasks/${userId}`);
 			const data: ITask[] = await res.json();
 			set({ tasks: data });
-			set({});
 		} catch (error) {
 			console.error("Failed to fetch tasks", error);
 		}
@@ -64,8 +62,6 @@ const useTaskStore = create<TaskState>((set) => ({
 
 const useGroupStore = create<GroupState>((set) => ({
 	groups: [],
-	addGroup: (newGroup: IGroup) =>
-		set((state) => ({ groups: [...state.groups, newGroup] })),
 	deleteGroup: (groupId: string) =>
 		set((state) => ({
 			groups: state.groups.filter((group) => group.id !== groupId),
@@ -86,21 +82,26 @@ const useGroupStore = create<GroupState>((set) => ({
 		}
 	},
 	addGroupToServer: async (group: IGroup) => {
-		try {
-			const response = await fetch("http://localhost:3000/api/v1/groups", {
+		toast.promise(
+			fetch("http://localhost:3000/api/v1/groups", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify(group),
-			});
+			}).then(async (response) => {
+				if (!response.ok) throw new Error("Failed to add group");
 
-			if (!response.ok) throw new Error("Failed to add group");
+				set((state) => ({ groups: [...state.groups, group] }));
 
-			set((state) => ({ groups: [...state.groups, group] }));
-		} catch (error) {
-			console.error("Error adding group to server", error);
-		}
+				return group;
+			}),
+			{
+				loading: "Adding group...",
+				success: "New group has been created ;)",
+				error: "Failed to add group :(",
+			},
+		);
 	},
 }));
 
@@ -110,10 +111,6 @@ const useStatusStore = create<StatusState>((set) => ({
 		set((state) => ({
 			statuses:
 				typeof updater === "function" ? updater(state.statuses) : updater,
-		})),
-	addStatus: (newStatus: IStatus) =>
-		set((state) => ({
-			statuses: [...state.statuses, newStatus],
 		})),
 	deleteStatus: (deleteId: string) =>
 		set((state) => ({
@@ -137,21 +134,24 @@ const useStatusStore = create<StatusState>((set) => ({
 		}
 	},
 	addStatusToServer: async (status: IStatus) => {
-		try {
-			const response = await fetch("http://localhost:3000/api/v1/statuses", {
+		toast.promise(
+			fetch("http://localhost:3000/api/v1/statuses", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify(status),
-			});
+			}).then(async (response) => {
+				if (!response.ok) throw new Error("Failed to adding status");
 
-			if (!response.ok) throw new Error("Failed to add the status");
-
-			set((state) => ({ statuses: [...state.statuses, status] }));
-		} catch (error) {
-			console.error("Error adding status to server", error);
-		}
+				set((state) => ({ statuses: [...state.statuses, status] }));
+			}),
+			{
+				loading: "Loading...",
+				success: "New status has been created ;)",
+				error: "Failed to add status :(",
+			},
+		);
 	},
 }));
 
