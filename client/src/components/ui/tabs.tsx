@@ -26,12 +26,6 @@ function TabsComponent() {
 				>
 					List
 				</Tab>
-				<Tab
-					className="px-4 py-2 cursor-pointer bg-white/50 focus:outline-none hover:opacity-70 border-t border-x border-custom-default rounded-t-md"
-					selectedClassName="!bg-transparent"
-				>
-					Calendar
-				</Tab>
 				<Button
 					onClick={() => setOpen(true)}
 					variant="outline"
