@@ -27,6 +27,8 @@ interface NameFormProps {
 	isEdit?: boolean;
 }
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 const formSchema = z.object({
 	name: z.string().min(2, {
 		message: "Name must be at least 2 characters.",
@@ -70,7 +72,7 @@ function NameForm({ onSave, data, type, isEdit = false }: NameFormProps) {
 				const { name } = values;
 
 				toast.promise(
-					fetch(`http://localhost:3000/api/v1/groups/${data.id}`, {
+					fetch(`${apiUrl}/api/v1/groups/${data.id}`, {
 						method: "PUT",
 						headers: {
 							"Content-Type": "application/json",
@@ -89,7 +91,7 @@ function NameForm({ onSave, data, type, isEdit = false }: NameFormProps) {
 				);
 			} else {
 				toast.promise(
-					fetch(`http://localhost:3000/api/v1/statuses/${data.id}`, {
+					fetch(`${apiUrl}/api/v1/statuses/${data.id}`, {
 						method: "PUT",
 						headers: { "Content-Type": "application/json" },
 						body: JSON.stringify({ status: values.name }),

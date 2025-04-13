@@ -5,7 +5,6 @@ import "react-tabs/style/react-tabs.css";
 
 import Board from "@/components/Board";
 import { Button } from "@/components/ui/button";
-import Calendar from "@/components/Calendar";
 import TaskDialog from "@/components/ui/taskDialog";
 import List from "../List";
 
@@ -27,12 +26,6 @@ function TabsComponent() {
 				>
 					List
 				</Tab>
-				<Tab
-					className="px-4 py-2 cursor-pointer bg-white/50 focus:outline-none hover:opacity-70 border-t border-x border-custom-default rounded-t-md"
-					selectedClassName="!bg-transparent"
-				>
-					Calendar
-				</Tab>
 				<Button
 					onClick={() => setOpen(true)}
 					variant="outline"
@@ -49,9 +42,6 @@ function TabsComponent() {
 			</TabPanel>
 			<TabPanel>
 				<List />
-			</TabPanel>
-			<TabPanel>
-				<Calendar />
 			</TabPanel>
 		</Tabs>
 	);

@@ -31,6 +31,8 @@ interface StatusState {
 	addStatusToServer: (status: IStatus) => void;
 }
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 const useTaskStore = create<TaskState>((set) => ({
 	tasks: [],
 	setTasks: (updater) =>
@@ -51,7 +53,7 @@ const useTaskStore = create<TaskState>((set) => ({
 		})),
 	fetchTasks: async (userId: string) => {
 		try {
-			const res = await fetch(`http://localhost:3000/api/v1/tasks/${userId}`);
+			const res = await fetch(`${apiUrl}/api/v1/tasks/${userId}`);
 			const data: ITask[] = await res.json();
 			set({ tasks: data });
 		} catch (error) {
@@ -74,7 +76,7 @@ const useGroupStore = create<GroupState>((set) => ({
 		})),
 	fetchGroups: async (userId: string) => {
 		try {
-			const res = await fetch(`http://localhost:3000/api/v1/groups/${userId}`);
+			const res = await fetch(`${apiUrl}/api/v1/groups/${userId}`);
 			const data: IGroup[] = await res.json();
 			set({ groups: data });
 		} catch (error) {
@@ -83,7 +85,7 @@ const useGroupStore = create<GroupState>((set) => ({
 	},
 	addGroupToServer: async (group: IGroup) => {
 		toast.promise(
-			fetch("http://localhost:3000/api/v1/groups", {
+			fetch(`${apiUrl}/api/v1/groups`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -124,9 +126,7 @@ const useStatusStore = create<StatusState>((set) => ({
 		})),
 	fetchStatus: async (userId: string) => {
 		try {
-			const res = await fetch(
-				`http://localhost:3000/api/v1/statuses/${userId}`,
-			);
+			const res = await fetch(`${apiUrl}/api/v1/statuses/${userId}`);
 			const data: IStatus[] = await res.json();
 			set({ statuses: data });
 		} catch (error) {
@@ -135,7 +135,7 @@ const useStatusStore = create<StatusState>((set) => ({
 	},
 	addStatusToServer: async (status: IStatus) => {
 		toast.promise(
-			fetch("http://localhost:3000/api/v1/statuses", {
+			fetch(`${apiUrl}/api/v1/statuses`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",

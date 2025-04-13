@@ -46,6 +46,8 @@ function List() {
 
 	const { user } = useUser();
 
+	const apiUrl = import.meta.env.VITE_API_URL;
+
 	useEffect(() => {
 		if (!user) {
 			console.error("User is not authenticated.");
@@ -78,7 +80,7 @@ function List() {
 
 		if (status) {
 			toast.promise(
-				fetch(`http://localhost:3000/api/v1/tasks/${taskId}`, {
+				fetch(`${apiUrl}/api/v1/tasks/${taskId}`, {
 					method: "PUT",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({ statusId: newValueId }),

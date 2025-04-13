@@ -74,6 +74,8 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 
 	const { user } = useUser();
 
+	const apiUrl = import.meta.env.VITE_API_URL;
+
 	useEffect(() => {
 		if (!user) {
 			console.error("User is not authenticated.");
@@ -128,7 +130,7 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 
 		if (task) {
 			toast.promise(
-				fetch(`http://localhost:3000/api/v1/tasks/${task.id}`, {
+				fetch(`${apiUrl}/api/v1/tasks/${task.id}`, {
 					method: "PUT",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify(newTask),
@@ -145,7 +147,7 @@ function TaskForm({ onSave, task }: TaskFormProps) {
 			);
 		} else {
 			toast.promise(
-				fetch("http://localhost:3000/api/v1/tasks", {
+				fetch(`${apiUrl}/api/v1/tasks`, {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify(newTask),
