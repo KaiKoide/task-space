@@ -4,7 +4,7 @@
 	"main": "index.js",
 	"type": "commonjs",
 	"scripts": {
-		"start": "node --experimental-specifier-resolution=node --loader ts-node/esm api/index.ts",
+		"start": "node ./dist/api/index.js",
 		"start:dev": "nodemon api/index.ts",
 		"build": "tsc",
 		"serve": "node dist/index.js"
