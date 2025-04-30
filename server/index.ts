@@ -1,9 +1,9 @@
 import cors from "cors";
 import express, { type Request, type Response } from "express";
 
-import { groupsRoute } from "./routes/group.route";
-import { statusRoute } from "./routes/status.route";
-import { taskRoute } from "./routes/task.route";
+import { groupsRoute } from "./src/routes/group.route";
+import { statusRoute } from "./src/routes/status.route";
+import { taskRoute } from "./src/routes/task.route";
 
 const app = express();
 const port = process.env.PORT || 3000;
