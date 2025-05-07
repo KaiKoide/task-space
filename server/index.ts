@@ -50,4 +50,17 @@ for (const route of defaultRoutes) {
 	app.use(`/${api_prefix}${route.path}`, route.route);
 }
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+// console.log("process.env.VERCEL_URL", process.env.VERCEL_URL);
+// console.log("process.env.NODE_ENV", process.env.NODE_ENV);
+
+// if (!process.env.VERCEL_URL) {
+// 	app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+// }
+
+// For localhost
+if (!process.env.VERCEL_URL) {
+	app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+}
+
+// For production
+export default app;
