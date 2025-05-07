@@ -1,66 +1,26 @@
+import express from "express";
 import cors from "cors";
-import express, { type Request, type Response } from "express";
-
-import { groupsRoute } from "./src/routes/group.route";
-import { statusRoute } from "./src/routes/status.route";
-import { taskRoute } from "./src/routes/task.route";
 
 const app = express();
-const port = process.env.PORT || 3000;
 
-const base_path = "v1";
-const api_prefix = "api";
-
-const defaultRoutes = [
-	{
-		path: `/${base_path}/groups`,
-		route: groupsRoute,
-	},
-	{
-		path: `/${base_path}/statuses`,
-		route: statusRoute,
-	},
-	{
-		path: `/${base_path}/tasks`,
-		route: taskRoute,
-	},
-];
-
-// Use the environment variable offered by Vercel for URL
-const frontendUrl = process.env.VERCEL_URL
-	? `https://${process.env.VERCEL_URL}`
-	: "http://localhost:5173";
-
+// 基本的なミドルウェア
 app.use(express.json());
+app.use(cors());
 
-app.use(
-	cors({
-		origin: frontendUrl || "*",
-		methods: ["GET", "POST", "PUT", "DELETE"],
-		allowedHeaders: ["Authorization", "Content-Type"],
-	}),
-);
-
-app.get("/", (req: Request, res: Response) => {
-	res.send("Hello World!");
+// 簡単なルート
+app.get("/", (req, res) => {
+	res.send("Hello from Vercel!");
 });
 
-for (const route of defaultRoutes) {
-	console.log(`Route: /${api_prefix}${route.path}`);
-	app.use(`/${api_prefix}${route.path}`, route.route);
+app.get("/api/test", (req, res) => {
+	res.json({ message: "API is working!" });
+});
+
+// ローカル環境のみ
+if (process.env.NODE_ENV !== "production") {
+	const port = process.env.PORT || 3000;
+	app.listen(port, () => console.log(`Server running on port ${port}`));
 }
 
-// console.log("process.env.VERCEL_URL", process.env.VERCEL_URL);
-// console.log("process.env.NODE_ENV", process.env.NODE_ENV);
-
-// if (!process.env.VERCEL_URL) {
-// 	app.listen(port, () => console.log(`Example app listening on port ${port}!`));
-// }
-
-// For localhost
-if (!process.env.VERCEL_URL) {
-	app.listen(port, () => console.log(`Example app listening on port ${port}!`));
-}
-
-// For production
+// Vercel用にエクスポート
 export default app;
